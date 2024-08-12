@@ -22,6 +22,30 @@ router.post("/postorder", checkAuth, async (req, res) => {
   }
 });
 
+router.put("/orderstatus/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    res.json({ success: true, message: "Order status updated successfully" });
+  } catch (error) {
+    console.error("Error updating order status:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.get("/getorder", checkAuth, async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id });
@@ -29,6 +53,31 @@ router.get("/getorder", checkAuth, async (req, res) => {
   } catch (error) {
     console.error("Error retrieving orders:", error);
     res.status(500).json({ message: "Error retrieving orders" });
+  }
+});
+
+router.get("/getadminorder", async (req, res) => {
+  try {
+    const orders = await Order.find();
+
+    res.json(orders);
+  } catch (error) {
+    console.error("Error retrieving orders:", error);
+    res.status(500).json({ message: "Error retrieving orders" });
+  }
+});
+
+router.delete("/deleteorder/:id", async (req, res) => {
+  try {
+    const order = await Order.findOneAndDelete({
+      _id: req.params.id,
+    });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json({ message: "Order deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting order" });
   }
 });
 

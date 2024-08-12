@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { MdDelete } from "react-icons/md";
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,13 +47,17 @@ const MyOrders = () => {
           orders.map((order) => (
             <div
               key={order._id}
-              className="bg-white shadow-md rounded-lg p-4 mb-4"
+              className="bg-white shadow-md rounded-lg p-4 mb-4 flex flex-col gap-4"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Order ID: {order._id}</h2>
-                <p className="text-gray-500">
-                  Created At: {new Date(order.createdAt).toLocaleString()}
-                </p>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold">
+                    Order ID: {order._id}
+                  </h2>
+                  <p className="text-gray-500">
+                    Created At: {new Date(order.createdAt).toLocaleString()}
+                  </p>
+                </div>
               </div>
               <div className="space-y-4">
                 {order.cartItems.map((item) => (

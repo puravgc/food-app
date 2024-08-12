@@ -93,7 +93,6 @@ app.use(require("./routes/userLogin"));
 app.use(require("./routes/addCart"));
 app.use(require("./routes/order"));
 app.use(require("./routes/promoCode"));
-app.use(require("./routes/admin"));
 app.use(require("./routes/esewaIntegration"));
 
 const server = createServer(app);

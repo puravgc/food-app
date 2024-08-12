@@ -59,7 +59,7 @@ router.post("/createesewaorder", async (req, res) => {
       product_code: "EPAYTEST",
       signature: signature,
       signed_field_names: "total_amount,transaction_uuid,product_code",
-      success_url: "http://localhost:5000/esewasuccess",
+      success_url: "http://localhost:5173/myorders",
       tax_amount: "0",
       total_amount: totalPrice,
       transaction_uuid: orderId,
