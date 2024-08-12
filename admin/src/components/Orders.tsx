@@ -7,18 +7,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Button } from "@mui/material";
-import { AiOutlineLoading } from "react-icons/ai";
 
 const Orders = () => {
   const socket = io("http://localhost:5000");
   const [orders, setOrders] = useState([]);
   const [status, setStatus] = useState({});
-  const [currentOrderId, setCurrentOrderId] = useState("");
 
-  const handleStatusChange = async (
-    event: SelectChangeEvent,
-    orderId: string
-  ) => {
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
     try {
       const response = await fetch(
         `http://localhost:5000/orderstatus/${orderId}`,
@@ -27,14 +22,16 @@ const Orders = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status: event.target.value }),
+          body: JSON.stringify({ status: newStatus }),
         }
       );
       const data = await response.json();
-      console.log(data.order);
       if (data.success) {
         toast.success("Order status updated!");
-        getOrders();
+        setStatus((prev) => ({
+          ...prev,
+          [orderId]: newStatus,
+        }));
       } else {
         toast.error("Failed to update order status");
         console.error("Failed to update status:", data.message);
@@ -86,13 +83,19 @@ const Orders = () => {
       const response = await fetch("http://localhost:5000/getadminorder");
       const data = await response.json();
       setOrders(data || []);
+      // Initialize status state based on fetched orders
+      const statusMap = data.reduce((acc, order) => {
+        acc[order._id] = order.status;
+        return acc;
+      }, {});
+      setStatus(statusMap);
     } catch (error) {
       toast.error("Failed to fetch orders");
       console.error("Failed to fetch orders:", error.message);
     }
   };
 
-  const handleDeleteOrder = async (orderId) => {
+  const handleDeleteOrder = async (orderId: string) => {
     try {
       const response = await fetch(
         `http://localhost:5000/deleteorder/${orderId}`,
@@ -181,12 +184,13 @@ const Orders = () => {
                     labelId={`status-select-label-${order._id}`}
                     id={`status-select-${order._id}`}
                     value={status[order._id] || ""}
-                    onChange={(e) => {
+                    onChange={(e: SelectChangeEvent<string>) => {
+                      const newStatus = e.target.value;
                       setStatus((prev) => ({
                         ...prev,
-                        [order._id]: e.target.value,
+                        [order._id]: newStatus,
                       }));
-                      handleStatusChange(e, order._id);
+                      handleStatusChange(order._id, newStatus);
                     }}
                     label="Order Status"
                   >
@@ -202,17 +206,7 @@ const Orders = () => {
                     <MenuItem value="cancelled">Cancelled</MenuItem>
                   </Select>
                 </FormControl>
-                <Button
-                  variant="contained"
-                  onClick={() =>
-                    handleStatusChange(
-                      { target: { value: status[order._id] } },
-                      order._id
-                    )
-                  }
-                >
-                  Set Status
-                </Button>
+
               </div>
             </div>
           ))

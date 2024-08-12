@@ -6,6 +6,8 @@ import { categoryContext } from "../context/categoryContext";
 import { GrSubtract, GrAdd } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import PaymentOptions from "./PaymentOptions";
+import CheckoutModal from "./CheckoutModal";
+
 const Cart = () => {
   const socket = io("http://localhost:5000");
   const navigate = useNavigate();
@@ -13,7 +15,9 @@ const Cart = () => {
   const [totalPrice, settotalPrice] = useState(0);
   const [promo, setpromo] = useState("");
   const [paymentOption, setpaymentOption] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { totalCartItems, settotalCartItems } = useContext(categoryContext);
+
   const fetchCartItems = async () => {
     try {
       const response = await fetch("http://localhost:5000/getcart", {
@@ -58,7 +62,6 @@ const Cart = () => {
       );
       const data = await response.json();
       await settotalCartItems(totalCartItems - data.quantity);
-      console.log(data);
       fetchCartItems();
       calculateTotal(cartItems);
     } catch (error) {
@@ -74,7 +77,6 @@ const Cart = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-
         body: JSON.stringify({ quantity: newQuantity }),
       });
       const data = await response.json();
@@ -99,6 +101,7 @@ const Cart = () => {
       console.log(error);
     }
   };
+
   const postOrder = async () => {
     try {
       const response = await fetch("http://localhost:5000/postorder", {
@@ -124,9 +127,8 @@ const Cart = () => {
     }
   };
 
-  const checkoutHandler = async (e) => {
+  const checkoutHandler = (e) => {
     e.preventDefault();
-
     if (cartItems.length === 0) {
       toast.error("Please add at least one item to the cart");
       return;
@@ -136,9 +138,79 @@ const Cart = () => {
       toast.error("Please select a payment option");
       return;
     }
-    postOrder();
 
+    setIsModalOpen(true);
+  };
+
+  const esewaIntegration = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/createesewaorder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Add any other headers as needed
+        },
+        body: JSON.stringify({ totalPrice, orderId: `${Date.now()}` }),
+      });
+
+      // Check if the request was successful (status code 2xx)
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(responseData.formData);
+        esewaCall(responseData.formData);
+      } else {
+        console.error("Failed to fetch:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
+  };
+  const esewaCall = (formData: any) => {
+    console.log(formData);
+    var path = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+    var form = document.createElement("form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", path);
+
+    for (var key in formData) {
+      var hiddenField = document.createElement("input");
+      hiddenField.setAttribute("type", "hidden");
+      hiddenField.setAttribute("name", key);
+      hiddenField.setAttribute("value", formData[key]);
+      form.appendChild(hiddenField);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  };
+
+  const handleConfirmCheckout = async () => {
+    setIsModalOpen(false);
+    if (paymentOption === "eSewa Payment") {
+      esewaIntegration();
+    }
+    postOrder();
+    removeAllCartItems();
     socket.emit("checkoutcart", { cartItems, paymentOption });
+  };
+
+  const removeAllCartItems = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/removeallcart", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      if (!data.success) {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handlePromo = async (e) => {
@@ -159,7 +231,6 @@ const Cart = () => {
         }),
       });
       const data = await response.json();
-      console.log(data);
       if (data.success) {
         toast.success(data.message);
         setpromo("");
@@ -178,7 +249,7 @@ const Cart = () => {
 
   return (
     <div className="h-screen w-screen overflow-y-auto">
-      <section className=" relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
+      <section className="relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full xl:after:w-1/3 after:top-0 after:right-0 after:bg-gray-50">
         <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto relative z-10">
           <div className="grid grid-cols-12">
             <div className="col-span-12 xl:col-span-8 lg:pr-8 pt-14 pb-8 lg:py-24 w-full max-xl:max-w-3xl max-xl:mx-auto">
@@ -287,7 +358,7 @@ const Cart = () => {
                 ))}
               </div>
             </div>
-            <div className=" col-span-12 xl:col-span-4 bg-gray-50 w-full max-xl:px-6 max-w-3xl xl:max-w-lg mx-auto lg:pl-8 py-24">
+            <div className="col-span-12 xl:col-span-4 bg-gray-50 w-full max-xl:px-6 max-w-3xl xl:max-w-lg mx-auto lg:pl-8 py-24">
               <h2 className="font-manrope font-bold text-3xl leading-10 text-black pb-8 border-b border-gray-300">
                 Order Summary
               </h2>
@@ -310,7 +381,7 @@ const Cart = () => {
                   </label>
                   <div className="flex pb-4 w-full">
                     <div className="relative w-full ">
-                      <div className=" absolute left-0 top-0 py-2.5 px-4 text-gray-300"></div>
+                      <div className="absolute left-0 top-0 py-2.5 px-4 text-gray-300"></div>
                       <input
                         onChange={(e) => {
                           setpromo(e.target.value);
@@ -353,6 +424,13 @@ const Cart = () => {
           </div>
         </div>
       </section>
+
+      {/* Modal */}
+      <CheckoutModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmCheckout}
+      />
     </div>
   );
 };

@@ -34,9 +34,9 @@ export default function Example() {
             </div>
           </div>
         </div>
-        <div className="hidden xl:block w-full lg:w-1/2 flex justify-center lg:justify-end mt-10 lg:mt-0">
+        <div className="hidden xl:block w-full lg:w-1/2 flex justify-center lg:justify-end mt-10 lg:mt-0 ">
           <img
-            className="object-cover w-full h-[30rem] rounded-lg"
+            className="object-contain w-full h-[30rem] rounded-2xl"
             src={illustration}
             alt="Illustration"
           />

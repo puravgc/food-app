@@ -21,7 +21,15 @@ router.post("/addtocart", checkAuth, async (req, res) => {
   }
 });
 
-
+router.delete("/removeallcart", checkAuth, async (req, res) => {
+  try {
+    await Cart.deleteMany({ user: req.user._id });
+    res.json({ success: true, message: "Cart cleared" });
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    res.status(500).json({ message: "Error clearing cart" });
+  }
+});
 
 router.delete("/removefromcart/:id", checkAuth, async (req, res) => {
   try {
