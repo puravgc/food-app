@@ -31,18 +31,6 @@ const Details = () => {
     }
   }, [location.search, setusername, setemail]);
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    if (
-      !queryParams.has("username") ||
-      !queryParams.has("email") ||
-      !queryParams.has("firstName") ||
-      !queryParams.has("lastName")
-    ) {
-      navigate("/signup");
-    }
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

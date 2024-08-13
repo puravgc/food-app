@@ -4,7 +4,7 @@ import { FlipWords } from "./ui/flip-words";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 
-export default function Example() {
+export default function Hero() {
   const words = ["Delight", "Pleasure", "Satisfaction", "Excitement"];
   const navigate = useNavigate();
 

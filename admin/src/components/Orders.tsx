@@ -54,8 +54,8 @@ const Orders = () => {
 
   useEffect(() => {
     socket.on("cartdetails", () => {
-      getOrders();
       toast.success("NEW ORDER!!");
+      getOrders();
     });
 
     return () => {
@@ -73,7 +73,6 @@ const Orders = () => {
         return acc;
       }, {});
       setStatus(statusMap);
-      console.log(data);
     } catch (error) {
       toast.error("Failed to fetch orders");
       console.error("Failed to fetch orders:", error.message);
