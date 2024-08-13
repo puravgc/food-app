@@ -68,17 +68,17 @@ const Orders = () => {
       const response = await fetch("http://localhost:5000/getadminorder");
       const data = await response.json();
       setOrders(data || []);
-      // Initialize status state based on fetched orders
       const statusMap = data.reduce((acc, order) => {
         acc[order._id] = order.status;
         return acc;
       }, {});
       setStatus(statusMap);
+      console.log(data);
     } catch (error) {
       toast.error("Failed to fetch orders");
       console.error("Failed to fetch orders:", error.message);
     } finally {
-      setLoading(false); // Stop loading after fetching orders
+      setLoading(false);
     }
   };
 
@@ -132,15 +132,9 @@ const Orders = () => {
                     onClick={() => handleDeleteOrder(order._id)}
                   />
                 </div>
-                <p className="mb-2">
-                  Address: {order.cartItems[0]?.user?.address}
-                </p>
-                <p className="mb-2">
-                  Username: {order.cartItems[0]?.user?.username}
-                </p>
-                <p className="mb-2">
-                  Phone Number: {order.cartItems[0]?.user?.phoneNumber}
-                </p>
+                <p className="mb-2">Address: {order.user?.address}</p>
+                <p className="mb-2">Username: {order.user?.username}</p>
+                <p className="mb-2">Phone Number: {order.user?.phoneNumber}</p>
                 <div className="space-y-2">
                   {order.cartItems.map((item) => (
                     <div

@@ -17,8 +17,8 @@ export default function Example() {
               Delivering <FlipWords words={words} /> <br /> to Your Doorstep
             </h1>
             <p className="mt-6 text-lg sm:text-lg leading-8 text-gray-600">
-              Discover culinary delights with FoodieExpress. From quick snacks
-              to gourmet meals, order your favorites and enjoy fast, reliable
+              Discover culinary delights with Eat More. From quick snacks to
+              gourmet meals, order your favorites and enjoy fast, reliable
               delivery. Your next delicious meal is just a few clicks away!
             </p>
             <div className="mt-10 flex justify-center xl:justify-start">

@@ -20,7 +20,7 @@ const MyOrders = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setOrders(data);
+      setOrders(data.reverse());
     } catch (error) {
       setError(error.message);
       console.error("Error fetching orders", error);

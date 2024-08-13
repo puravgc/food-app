@@ -58,7 +58,7 @@ router.get("/getorder", checkAuth, async (req, res) => {
 
 router.get("/getadminorder", async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().populate("user");
 
     res.json(orders);
   } catch (error) {
