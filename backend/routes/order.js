@@ -5,17 +5,18 @@ const checkAuth = require("../middlewares/checkAuth");
 
 router.post("/postorder", checkAuth, async (req, res) => {
   try {
-    const { cartItems } = req.body;
+    const { cartItems, totalPrice } = req.body;
     if (!Array.isArray(cartItems)) {
       return res.status(400).json({ message: "Invalid order data" });
     }
     const newOrder = new Order({
       cartItems,
+      totalPrice,
       user: req.user._id,
     });
 
     await newOrder.save();
-    res.json({ success: true, message: "Orders Added" });
+    res.json({ success: true, message: "Orders Added", newOrder: newOrder });
   } catch (error) {
     console.error("Error adding order:", error);
     res.status(500).json({ message: "Error adding to orders" });
@@ -75,9 +76,9 @@ router.delete("/deleteorder/:id", async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-    res.json({ message: "Order deleted successfully" });
+    res.json({ message: "Order deleted successfully", success: true });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting order" });
+    res.status(500).json({ message: "Error deleting order", success: false });
   }
 });
 

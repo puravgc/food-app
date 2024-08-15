@@ -21,6 +21,7 @@ const MyOrders = () => {
       }
       const data = await response.json();
       setOrders(data.reverse());
+      console.log(data)
     } catch (error) {
       setError(error.message);
       console.error("Error fetching orders", error);
@@ -89,6 +90,7 @@ const MyOrders = () => {
               </div>
               <div className="mt-4">
                 <p className="text-gray-600">Order Status: {order.status}</p>
+                <p className="text-gray-600">Payment Status: {order.paymentStatus}</p>
               </div>
             </div>
           ))

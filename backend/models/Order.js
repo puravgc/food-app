@@ -12,6 +12,7 @@ const orderSchema = new mongoose.Schema(
     cartItems: [itemSchema],
     totalPrice: { type: Number, required: true },
     status: { type: String, default: "pending" },
+    paymentStatus: { type: String, default: "pending" },
   },
   { timestamps: true }
 );

@@ -1,7 +1,6 @@
 import React, {  useState } from "react";
 import Navbar from "./components/Navbar";
 import Orders from "./components/Orders";
-import Dashboard from "./components/Dashboard";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
@@ -14,7 +13,6 @@ const App = () => {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Orders />} />
         </Routes>
       </BrowserRouter>

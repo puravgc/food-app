@@ -110,15 +110,17 @@ const Cart = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ cartItems }),
+        body: JSON.stringify({ cartItems, totalPrice }),
       });
       const data = await response.json();
+
       if (data.success) {
         toast.success("Order placed successfully!");
         setcartItems([]);
         settotalPrice(0);
         setpromo("");
         setpaymentOption("");
+        return data.newOrder._id;
       } else {
         toast.error(data.message);
       }
@@ -142,18 +144,15 @@ const Cart = () => {
     setIsModalOpen(true);
   };
 
-  const esewaIntegration = async () => {
+  const esewaIntegration = async (orderId) => {
     try {
       const response = await fetch("http://localhost:5000/createesewaorder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Add any other headers as needed
         },
-        body: JSON.stringify({ totalPrice, orderId: `${Date.now()}` }),
+        body: JSON.stringify({ totalPrice, orderId: orderId }),
       });
-
-      // Check if the request was successful (status code 2xx)
       if (response.ok) {
         const responseData = await response.json();
         console.log(responseData.formData);
@@ -166,9 +165,7 @@ const Cart = () => {
     }
   };
   const esewaCall = (formData: any) => {
-    console.log(formData);
     var path = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
-
     var form = document.createElement("form");
     form.setAttribute("method", "POST");
     form.setAttribute("action", path);
@@ -188,7 +185,9 @@ const Cart = () => {
   const handleConfirmCheckout = async () => {
     setIsModalOpen(false);
     if (paymentOption === "eSewa Payment") {
-      esewaIntegration();
+      const data = await postOrder();
+      esewaIntegration(data);
+      return;
     }
     postOrder();
     removeAllCartItems();

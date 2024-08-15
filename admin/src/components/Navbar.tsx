@@ -20,18 +20,7 @@ const Navbar = () => {
               <h1 className="font-bold text-2xl text-red-500">ADMIN ACCESS</h1>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8 justify-center items-center">
-              <Link
-                to="/"
-                className="text-gray-900 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Orders
-              </Link>
-              <Link
-                to="/dashboard"
-                className="text-gray-900 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Dashboard
-              </Link>
+              <div className=""></div>
             </div>
           </div>
 

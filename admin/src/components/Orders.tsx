@@ -73,6 +73,8 @@ const Orders = () => {
         return acc;
       }, {});
       setStatus(statusMap);
+
+      console.log(data);
     } catch (error) {
       toast.error("Failed to fetch orders");
       console.error("Failed to fetch orders:", error.message);
@@ -151,13 +153,7 @@ const Orders = () => {
                     </div>
                   ))}
                   <div>
-                    <h1>
-                      TOTAL : $
-                      {order.cartItems.reduce(
-                        (total, item) => total + item.price * item.quantity,
-                        0
-                      )}
-                    </h1>
+                    <h1>TOTAL : ${order.totalPrice}</h1>
                   </div>
                 </div>
                 <div className="flex justify-start items-center gap-5">
@@ -187,6 +183,9 @@ const Orders = () => {
                       <MenuItem value="cancelled">Cancelled</MenuItem>
                     </Select>
                   </FormControl>
+                </div>
+                <div>
+                  <p>Payment Status : {order.paymentStatus} </p>
                 </div>
               </div>
             ))

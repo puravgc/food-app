@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const router = express.Router();
+const Order = require("../models/Order");
 
 const createSignature = (message) => {
   const secret = "8gBm/:&EnhH.1/q";
@@ -44,6 +45,18 @@ const handleEsewaSuccess = async (req, res, next) => {
   }
 };
 
+const updateOrderAfterPayment = async (req, res) => {
+  try {
+    console.log(req.body);
+    const newOrder = await Order.findById(req.transaction_uuid);
+    newOrder.paymentStatus = "paid";
+    await newOrder.save();
+    res.redirect("http://localhost:5173/myorders");
+  } catch (err) {
+    return res.status(400).json({ error: err?.message || "No Orders found" });
+  }
+};
+
 router.post("/createesewaorder", async (req, res) => {
   try {
     const { totalPrice, orderId } = req.body;
@@ -59,7 +72,7 @@ router.post("/createesewaorder", async (req, res) => {
       product_code: "EPAYTEST",
       signature: signature,
       signed_field_names: "total_amount,transaction_uuid,product_code",
-      success_url: "http://localhost:5173/myorders",
+      success_url: "http://localhost:5000/esewasuccess",
       tax_amount: "0",
       total_amount: totalPrice,
       transaction_uuid: orderId,
@@ -75,6 +88,6 @@ router.post("/createesewaorder", async (req, res) => {
   }
 });
 
-router.get("/esewasuccess", handleEsewaSuccess);
+router.get("/esewasuccess", handleEsewaSuccess, updateOrderAfterPayment);
 
 module.exports = router;
