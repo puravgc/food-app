@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { RxCross2 } from "react-icons/rx";
 import toast from "react-hot-toast";
 import InputLabel from "@mui/material/InputLabel";
@@ -8,14 +8,57 @@ import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { Button, CircularProgress } from "@mui/material";
 
-const Orders = () => {
-  const socket = io("http://localhost:5000");
-  const [orders, setOrders] = useState([]);
-  const [status, setStatus] = useState({});
-  const [loading, setLoading] = useState(true); // Added loading state
+interface OrderItem {
+  _id: string;
+  productName: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+interface Order {
+  _id: string;
+  user: {
+    address: string;
+    username: string;
+    phoneNumber: string;
+  };
+  cartItems: OrderItem[];
+  totalPrice: number;
+  status: string;
+  paymentStatus: string;
+}
+
+const OrderStatus = {
+  PENDING: "pending",
+  PREPARING: "preparing",
+  OUT_FOR_DELIVERY: "out-for-delivery",
+  DELIVERED: "delivered",
+  CANCELLED: "cancelled",
+};
+
+const Orders: React.FC = () => {
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [status, setStatus] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const socketConnection = io("http://localhost:5000");
+    setSocket(socketConnection);
+
+    socketConnection.on("cartdetails", () => {
+      toast.success("NEW ORDER!!");
+      getOrders();
+    });
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
-    const previousStatus = status[orderId]; // Store previous status for rollback
+    const previousStatus = status[orderId];
     setStatus((prev) => ({
       ...prev,
       [orderId]: newStatus,
@@ -40,41 +83,28 @@ const Orders = () => {
         setStatus((prev) => ({
           ...prev,
           [orderId]: previousStatus,
-        })); // Revert to previous status
+        }));
       }
     } catch (error) {
       toast.error("Error updating status");
       setStatus((prev) => ({
         ...prev,
         [orderId]: previousStatus,
-      })); // Revert to previous status
+      }));
       console.error("Error updating status:", error.message);
     }
   };
 
-  useEffect(() => {
-    socket.on("cartdetails", () => {
-      toast.success("NEW ORDER!!");
-      getOrders();
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
-
   const getOrders = async () => {
     try {
       const response = await fetch("http://localhost:5000/getadminorder");
-      const data = await response.json();
+      const data: Order[] = await response.json();
       setOrders(data || []);
-      const statusMap = data.reduce((acc, order) => {
+      const statusMap = data.reduce((acc: Record<string, string>, order) => {
         acc[order._id] = order.status;
         return acc;
       }, {});
       setStatus(statusMap);
-
-      console.log(data);
     } catch (error) {
       toast.error("Failed to fetch orders");
       console.error("Failed to fetch orders:", error.message);
@@ -133,9 +163,9 @@ const Orders = () => {
                     onClick={() => handleDeleteOrder(order._id)}
                   />
                 </div>
-                <p className="mb-2">Address: {order.user?.address}</p>
-                <p className="mb-2">Username: {order.user?.username}</p>
-                <p className="mb-2">Phone Number: {order.user?.phoneNumber}</p>
+                <p className="mb-2">Address: {order.user.address}</p>
+                <p className="mb-2">Username: {order.user.username}</p>
+                <p className="mb-2">Phone Number: {order.user.phoneNumber}</p>
                 <div className="space-y-2">
                   {order.cartItems.map((item) => (
                     <div
@@ -174,18 +204,24 @@ const Orders = () => {
                       <MenuItem value="">
                         <em>None</em>
                       </MenuItem>
-                      <MenuItem value="pending">Pending</MenuItem>
-                      <MenuItem value="preparing">Preparing</MenuItem>
-                      <MenuItem value="out-for-delivery">
+                      <MenuItem value={OrderStatus.PENDING}>Pending</MenuItem>
+                      <MenuItem value={OrderStatus.PREPARING}>
+                        Preparing
+                      </MenuItem>
+                      <MenuItem value={OrderStatus.OUT_FOR_DELIVERY}>
                         Out for Delivery
                       </MenuItem>
-                      <MenuItem value="delivered">Delivered</MenuItem>
-                      <MenuItem value="cancelled">Cancelled</MenuItem>
+                      <MenuItem value={OrderStatus.DELIVERED}>
+                        Delivered
+                      </MenuItem>
+                      <MenuItem value={OrderStatus.CANCELLED}>
+                        Cancelled
+                      </MenuItem>
                     </Select>
                   </FormControl>
                 </div>
                 <div>
-                  <p>Payment Status : {order.paymentStatus} </p>
+                  <p>Payment Status: {order.paymentStatus}</p>
                 </div>
               </div>
             ))

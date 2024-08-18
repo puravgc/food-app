@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Card from "./Card";
 
-const Foods = ({ selectedCategory }) => {
-  const [foodData, setFoodData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+interface Food {
+  idMeal: string;
+  strMeal: string;
+  strMealThumb: string;
+}
+
+interface FoodsProps {
+  selectedCategory: string;
+}
+
+const Foods: React.FC<FoodsProps> = ({ selectedCategory }) => {
+  const [foodData, setFoodData] = useState<Food[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchCategory = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       const res = await fetch(
         `https://www.themealdb.com/api/json/v1/1/filter.php?c=${selectedCategory}`
       );
@@ -16,11 +26,13 @@ const Foods = ({ selectedCategory }) => {
         throw new Error("Failed to fetch data");
       }
       const data = await res.json();
-      console.log(data)
       setFoodData(data.meals);
     } catch (error) {
-      console.error(error);
-      setError(error.message);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }

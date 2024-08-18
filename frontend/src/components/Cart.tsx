@@ -8,16 +8,23 @@ import { useNavigate } from "react-router-dom";
 import PaymentOptions from "./PaymentOptions";
 import CheckoutModal from "./CheckoutModal";
 
+interface CartItems {
+  _id: string;
+  productName: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 const Cart = () => {
   const socket = io("http://localhost:5000");
   const navigate = useNavigate();
-  const [cartItems, setcartItems] = useState([]);
-  const [totalPrice, settotalPrice] = useState(0);
-  const [promo, setpromo] = useState("");
-  const [paymentOption, setpaymentOption] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cartItems, setcartItems] = useState<CartItems[]>([]);
+  const [totalPrice, settotalPrice] = useState<number>(0);
+  const [promo, setpromo] = useState<string>("");
+  const [paymentOption, setpaymentOption] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { totalCartItems, settotalCartItems } = useContext(categoryContext);
-
   const fetchCartItems = async () => {
     try {
       const response = await fetch("http://localhost:5000/getcart", {
@@ -40,7 +47,7 @@ const Cart = () => {
     }
   };
 
-  const calculateTotal = (items) => {
+  const calculateTotal = (items: CartItems[]) => {
     const total = items.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
@@ -48,7 +55,7 @@ const Cart = () => {
     settotalPrice(total);
   };
 
-  const deleteCart = async (id) => {
+  const deleteCart = async (id: string) => {
     try {
       const response = await fetch(
         `http://localhost:5000/removefromcart/${id}`,
@@ -69,7 +76,7 @@ const Cart = () => {
     }
   };
 
-  const updateQuantity = async (id, newQuantity) => {
+  const updateQuantity = async (id: string, newQuantity: number) => {
     try {
       const response = await fetch(`http://localhost:5000/updatecart/${id}`, {
         method: "PATCH",
@@ -120,6 +127,7 @@ const Cart = () => {
         settotalPrice(0);
         setpromo("");
         setpaymentOption("");
+        socket.emit("checkoutcart", { cartItems, paymentOption });
         return data.newOrder._id;
       } else {
         toast.error(data.message);
@@ -129,7 +137,7 @@ const Cart = () => {
     }
   };
 
-  const checkoutHandler = (e) => {
+  const checkoutHandler = (e: React.FormEvent) => {
     e.preventDefault();
     if (cartItems.length === 0) {
       toast.error("Please add at least one item to the cart");
@@ -144,7 +152,7 @@ const Cart = () => {
     setIsModalOpen(true);
   };
 
-  const esewaIntegration = async (orderId) => {
+  const esewaIntegration = async (orderId: string) => {
     try {
       const response = await fetch("http://localhost:5000/createesewaorder", {
         method: "POST",
@@ -187,11 +195,11 @@ const Cart = () => {
     if (paymentOption === "eSewa Payment") {
       const data = await postOrder();
       esewaIntegration(data);
+      removeAllCartItems();
       return;
     }
     postOrder();
     removeAllCartItems();
-    socket.emit("checkoutcart", { cartItems, paymentOption });
   };
 
   const removeAllCartItems = async () => {
@@ -212,7 +220,7 @@ const Cart = () => {
     }
   };
 
-  const handlePromo = async (e) => {
+  const handlePromo = async (e: React.FormEvent) => {
     e.preventDefault();
     const usedPromoCode = await getUserData();
     if (usedPromoCode) {

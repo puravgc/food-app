@@ -1,9 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
-const MyOrders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+interface CartItem {
+  _id: string;
+  image: string;
+  productName: string;
+  price: number;
+  quantity: number;
+}
+
+interface Order {
+  _id: string;
+  createdAt: string;
+  cartItems: CartItem[];
+  status: string;
+  paymentStatus: string;
+}
+
+const MyOrders: React.FC = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getOrders();
@@ -21,9 +38,12 @@ const MyOrders = () => {
       }
       const data = await response.json();
       setOrders(data.reverse());
-      console.log(data)
     } catch (error) {
-      setError(error.message);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
       console.error("Error fetching orders", error);
     } finally {
       setLoading(false);
@@ -90,7 +110,9 @@ const MyOrders = () => {
               </div>
               <div className="mt-4">
                 <p className="text-gray-600">Order Status: {order.status}</p>
-                <p className="text-gray-600">Payment Status: {order.paymentStatus}</p>
+                <p className="text-gray-600">
+                  Payment Status: {order.paymentStatus}
+                </p>
               </div>
             </div>
           ))

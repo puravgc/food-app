@@ -1,7 +1,17 @@
 import React from "react";
 import { IoIosClose } from "react-icons/io";
 
-const CheckoutModal = ({ isOpen, onClose, onConfirm }) => {
+interface CheckoutModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+const CheckoutModal: React.FC<CheckoutModalProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+}) => {
   if (!isOpen) return null;
   return (
     <div>

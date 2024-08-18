@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from "react";
 import Cartmodal from "./Cartmodal";
 
-const Card = ({ name, image, price }) => {
-  const [cartModal, setcartModal] = useState(false);
-  const [rating, setRating] = useState(0);
+interface CardProps {
+  name: string;
+  image: string;
+  price: number;
+}
+
+const Card: React.FC<CardProps> = ({ name, image, price }) => {
+  const [cartModal, setcartModal] = useState<boolean>(false);
+  const [rating, setRating] = useState<number>(0);
 
   useEffect(() => {
-    setRating(Math.floor(Math.random() * 3) + 3); // Generates a random number between 3 and 5
+    setRating(Math.floor(Math.random() * 3) + 3);
   }, []);
 
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <svg
           key={i}
           aria-hidden="true"
-          className={`h-5 w-5 ${i <= rating ? 'text-yellow-300' : 'text-gray-300'}`}
+          className={`h-5 w-5 ${
+            i <= rating ? "text-yellow-300" : "text-gray-300"
+          }`}
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"

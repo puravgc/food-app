@@ -7,11 +7,11 @@ import { AiOutlineLoading } from "react-icons/ai";
 const Login = () => {
   const navigate = useNavigate();
   const { isLoggedIn, setisLoggedIn } = useContext(userContext);
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const [loading, setloading] = useState(false);
+  const [email, setemail] = useState<string>("");
+  const [password, setpassword] = useState<string>("");
+  const [loading, setloading] = useState<boolean>(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setloading(true);
     try {

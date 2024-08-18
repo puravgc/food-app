@@ -3,11 +3,16 @@ import { categoryContext } from "../context/categoryContext";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 
-const Sidebar = () => {
-  const [categories, setCategories] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+// Define type for category
+interface Category {
+  strCategory: string;
+}
+
+const Sidebar: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { selectedCategory, setselectedCategory } = useContext(categoryContext);
-  const sidebarRef = useRef(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   const fetchCategories = async () => {
     try {
@@ -31,8 +36,11 @@ const Sidebar = () => {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -44,7 +52,7 @@ const Sidebar = () => {
     }
   }, [isOpen]);
 
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = (category: Category) => {
     setselectedCategory(category.strCategory.toLowerCase());
     setIsOpen(false);
   };
@@ -111,7 +119,11 @@ const Sidebar = () => {
         onClick={toggleSidebar}
         aria-label={isOpen ? "Close Sidebar" : "Open Sidebar"}
       >
-        {isOpen ? <></> : <IoIosArrowForward className="h-8 w-8" />}
+        {isOpen ? (
+          <FaTimes className="h-8 w-8" />
+        ) : (
+          <IoIosArrowForward className="h-8 w-8" />
+        )}
       </button>
     </>
   );

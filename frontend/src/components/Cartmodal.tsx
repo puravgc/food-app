@@ -10,8 +10,8 @@ export default function CartModal({
   image,
   price,
 }) {
-  const [quantity, setQuantity] = useState(1);
-  const { totalCartItems, settotalCartItems } = useContext(categoryContext);
+  const [quantity, setQuantity] = useState<number>(1);
+  const { settotalCartItems } = useContext(categoryContext);
 
   const increaseQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -51,26 +51,26 @@ export default function CartModal({
         <div className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto bg-gray-500 bg-opacity-75">
           <Dialog.Panel className="relative w-full max-w-lg p-6 bg-white rounded-xl shadow-xl">
             <div className="w-full flex justify-end mb-2">
-            <button
-              className=" text-black hover:text-gray-600 focus:outline-none"
-              onClick={() => setcartModal(false)}
-            >
-              <span className="sr-only">Close</span>
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+              <button
+                className=" text-black hover:text-gray-600 focus:outline-none"
+                onClick={() => setcartModal(false)}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
+                <span className="sr-only">Close</span>
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
             </div>
             <img
               src={image}

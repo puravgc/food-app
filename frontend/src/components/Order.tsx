@@ -6,7 +6,7 @@ import { categoryContext } from "../context/categoryContext";
 import { userContext } from "../context/userContext";
 import { toast } from "react-hot-toast";
 
-const Order = () => {
+const Order: React.FC = () => {
   const { selectedCategory } = useContext(categoryContext);
   const { setisLoggedIn } = useContext(userContext);
   const navigate = useNavigate();

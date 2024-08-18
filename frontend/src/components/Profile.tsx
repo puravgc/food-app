@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { toast } from "react-hot-toast";
 import Modal from "react-modal";
 
-const Profile = () => {
-  const [user, setUser] = useState({
+// Define the user state type
+interface User {
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  phoneNumber: string;
+  address: string;
+}
+
+const Profile: React.FC = () => {
+  const [user, setUser] = useState<User>({
     firstName: "",
     lastName: "",
     email: "",
@@ -11,14 +21,14 @@ const Profile = () => {
     phoneNumber: "",
     address: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPassword, setcurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currentPassword, setcurrentPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser({
       ...user,
@@ -28,30 +38,28 @@ const Profile = () => {
 
   const handleSave = async () => {
     setLoading(true);
-    const response = await fetch("http://localhost:5000/edituser", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        username: user.username,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        address: user.address,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      }),
-    });
-    const data = await response.json();
-    if (data.success) {
-      toast.success(data.message);
-      fetchUserData();
-    } else {
-      toast.error(data.message);
+    try {
+      const response = await fetch("http://localhost:5000/edituser", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(user),
+      });
+      const data = await response.json();
+      if (data.success) {
+        toast.success(data.message);
+        fetchUserData();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Error updating profile");
+    } finally {
+      setLoading(false);
+      setIsEditing(false);
     }
-    setLoading(false);
-    setIsEditing(false);
   };
 
   const handleChangePassword = async () => {
@@ -61,42 +69,50 @@ const Profile = () => {
     }
 
     setLoading(true);
-    const response = await fetch("http://localhost:5000/changepassword", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        currentPassword,
-        newPassword,
-        confirmPassword,
-      }),
-    });
-    const data = await response.json();
-    if (data.success) {
-      toast.success(data.message);
-      setNewPassword("");
-      setConfirmPassword("");
-      setIsModalOpen(false);
-    } else {
-      toast.error(data.message);
+    try {
+      const response = await fetch("http://localhost:5000/changepassword", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        toast.success(data.message);
+        setNewPassword("");
+        setConfirmPassword("");
+        setIsModalOpen(false);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Error changing password");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const fetchUserData = async () => {
-    const response = await fetch("http://localhost:5000/getuser", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setUser(data);
-      console.log(data)
-    } else {
-      console.error("Failed to fetch user data:", response.statusText);
+    try {
+      const response = await fetch("http://localhost:5000/getuser", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data);
+        console.log(data);
+      } else {
+        console.error("Failed to fetch user data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching user data", error);
     }
   };
 
@@ -104,8 +120,9 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "/";
+    } else {
+      fetchUserData();
     }
-    fetchUserData();
   }, []);
 
   return (

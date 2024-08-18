@@ -5,7 +5,6 @@ import { GoPerson } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { IoCartOutline } from "react-icons/io5";
 import { userContext } from "../context/userContext";
-import Cookies from "js-cookie";
 import { categoryContext } from "../context/categoryContext";
 import logo from "/logo.png";
 

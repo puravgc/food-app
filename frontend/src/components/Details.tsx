@@ -3,17 +3,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { userContext } from "../context/userContext";
 
-const Details = () => {
+const Details: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { username, setusername, email, setemail, password, setpassword } =
     useContext(userContext);
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -31,7 +31,7 @@ const Details = () => {
     }
   }, [location.search, setusername, setemail]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
