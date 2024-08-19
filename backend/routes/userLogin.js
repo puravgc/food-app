@@ -2,8 +2,12 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+
 const checkAuth = require("../middlewares/checkAuth");
 const router = express.Router();
+require("dotenv").config();
 
 router.post("/login", async (req, res) => {
   try {
@@ -102,6 +106,50 @@ router.post("/promocode", async (req, res) => {
     const promo = await PromoCode.findOne({ code: promoCode });
   } catch (error) {
     res.status(500).json({ message: "Server error", success: false });
+  }
+});
+
+router.post("/forgotpassword", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
+
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const otpExpiry = Date.now() + 10 * 60 * 1000;
+    user.resetPasswordOtp = otp;
+    user.resetPasswordExpiry = otpExpiry;
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      to: user.email,
+      from: process.env.EMAIL_USER,
+      subject: "Password Reset OTP",
+      text: `You are receiving this email because you (or someone else) have requested a password reset for your account. 
+Your OTP code is: ${otp}
+This OTP is valid for 10 minutes.
+If you did not request this, please ignore this email and your password will remain unchanged.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "OTP sent to your email", success: true });
+  } catch (error) {
+    res.status(500).json({ message: `Server error`, success: false });
+    console.log(error.message);
   }
 });
 

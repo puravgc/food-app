@@ -4,12 +4,16 @@ import { toast } from "react-hot-toast";
 import { userContext } from "../context/userContext";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLoading } from "react-icons/ai";
+import ForgotPassModal from "./ForgotPassModal";
 const Login = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, setisLoggedIn } = useContext(userContext);
+  const { setisLoggedIn } = useContext(userContext);
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +47,7 @@ const Login = () => {
     window.open("http://localhost:5000/auth/google/callback", "_self");
   };
 
-  return (
+  return (  
     <div className="">
       <div
         className="flex justify-center items-center h-screen"
@@ -54,7 +58,7 @@ const Login = () => {
           backgroundSize: "cover",
         }}
       >
-        <div className="h-2/3 bg-gray-100 lg:w-1/2 flex flex-col items-center justify-center shadow-2xl rounded-2xl backdrop-blur-lg bg-opacity-50">
+        <div className="h-2/3 bg-gray-100 lg:w-1/2 flex flex-col items-center justify-center shadow-2xl rounded-2xl backdrop-blur-lg bg-opacity-50 p-10">
           <div className="max-w-md w-full">
             <h1 className="text-3xl font-semibold mb-6 text-black text-center">
               Log In
@@ -103,6 +107,9 @@ const Login = () => {
                   className="bg-white mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
                 />
               </div>
+              <div onClick={() => setIsModalOpen(true)}>
+                <p className="text-sm cursor-pointer">Forgot Password?</p>
+              </div>
               <div>
                 <button
                   type="submit"
@@ -137,6 +144,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <ForgotPassModal open={isModalOpen} handleClose={handleCloseModal} />
     </div>
   );
 };
