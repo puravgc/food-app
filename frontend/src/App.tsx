@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Cart from "./components/Cart";
 import Profile from "./components/Profile";
 import MyOrders from "./components/MyOrders";
+import NewPassword from "./components/NewPassword";
 
 // Initialize contexts with default values
 const categoryContextValue: CategoryContextType = {
@@ -79,6 +80,7 @@ const App: React.FC = () => {
               <Route path="/order" element={<Order />} />
               <Route path="/myorders" element={<MyOrders />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/newpassword/:email" element={<NewPassword />} />
               <Route path="*" element={<Nopage />} />
             </Routes>
           </userContext.Provider>

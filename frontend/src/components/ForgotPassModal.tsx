@@ -6,8 +6,11 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import OtpInput from "react-otp-input";
 import { AiOutlineLoading } from "react-icons/ai";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import CryptoJS from "crypto-js";
 
 const style = {
   position: "absolute" as "absolute",
@@ -30,11 +33,14 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   open,
   handleClose,
 }) => {
-  const [email, setemail] = useState<string>("");
-  const [loading, setloading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState<string>("");
+  const [otp, setOtp] = useState<string>("");
+  const [isOtpSent, setIsOtpSent] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const handleResetSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setloading(true);
+    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:5000/forgotpassword", {
@@ -47,7 +53,8 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
       const data = await response.json();
 
-      if (data.success === true) {
+      if (data.success) {
+        setIsOtpSent(true);
         toast.success("OTP sent to your email.");
       } else {
         toast.error(data.message || "Failed to send OTP.");
@@ -55,7 +62,40 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     } catch (error) {
       toast.error("An error occurred while requesting OTP.");
     } finally {
-      setloading(false);
+      setLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/verifyotp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp }),
+      });
+      const data = await response.json();
+      console.log(data);
+      if (data.success === true) {
+        setLoading(false);
+        toast.success("OTP verified");
+        const encryptedEmail = CryptoJS.AES.encrypt(
+          email,
+          "testsecret"
+        ).toString();
+        const encodedEmail = encodeURIComponent(encryptedEmail);
+        navigate(`/newpassword/${encodedEmail}`);
+      } else {
+        setLoading(false);
+        toast.error(data.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error("Failed to verify OTP.");
+      console.log(error);
     }
   };
 
@@ -83,21 +123,42 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             Forgot Password
           </Typography>
           <Typography id="forgot-password-modal-description" sx={{ mt: 2 }}>
-            Please enter your email to reset your password.
+            {isOtpSent
+              ? "Please enter the OTP sent to your email."
+              : "Please enter your email to reset your password."}
           </Typography>
-          <form onSubmit={handleResetSubmit}>
-            <TextField
-              fullWidth
-              label="Email"
-              variant="outlined"
-              margin="normal"
-              color="error"
-              required
-              type="email"
-              onChange={(e) => {
-                setemail(e.target.value);
-              }}
-            />
+          <form onSubmit={isOtpSent ? handleOtpSubmit : handleResetSubmit}>
+            {!isOtpSent ? (
+              <TextField
+                fullWidth
+                label="Email"
+                variant="outlined"
+                margin="normal"
+                color="error"
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            ) : (
+              <OtpInput
+                value={otp}
+                onChange={setOtp}
+                numInputs={6}
+                renderSeparator={<span>-</span>}
+                renderInput={(props) => <input {...props} />}
+                inputStyle={{
+                  width: "100%",
+                  height: "3rem",
+                  margin: "0 0.5rem",
+                  textAlign: "center",
+                  fontSize: "1.5rem",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                  transition: "border-color 0.3s ease",
+                }}
+              />
+            )}
             <div className="flex justify-end space-x-2 mt-4">
               <Button onClick={handleClose} variant="outlined" color="error">
                 Cancel
@@ -110,8 +171,10 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                       <span className="sr-only">Loading...</span>
                     </div>
                   </>
+                ) : isOtpSent ? (
+                  "Verify OTP"
                 ) : (
-                  "Reset Password"
+                  "Send OTP"
                 )}
               </Button>
             </div>

@@ -153,4 +153,53 @@ If you did not request this, please ignore this email and your password will rem
   }
 });
 
+router.post("/verifyotp", async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
+    }
+
+    if (user.resetPasswordOtp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (new Date() > user.resetPasswordExpiry) {
+      return res.status(400).json({ success: false, message: "OTP expired" });
+    }
+
+    user.resetPasswordOtp = null;
+    user.resetPasswordExpiry = null;
+    await user.save();
+    res.json({ success: true, message: "OTP verified successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error verifying OTP" });
+  }
+});
+
+router.post("/resetpassword", async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPassword;
+    await user.save();
+    res.json({ success: true, message: "Password reset successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error resetting password" });
+  }
+});
+
 module.exports = router;
