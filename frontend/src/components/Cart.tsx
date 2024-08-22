@@ -24,6 +24,7 @@ const Cart = () => {
   const [promo, setpromo] = useState<string>("");
   const [paymentOption, setpaymentOption] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [location, setlocation] = useState<string>("");
   const { totalCartItems, settotalCartItems } = useContext(categoryContext);
   const fetchCartItems = async () => {
     try {
@@ -103,6 +104,7 @@ const Cart = () => {
         },
       });
       const data = await response.json();
+      setlocation(data.address);
       return data.promoCode;
     } catch (error) {
       console.log(error);
@@ -252,6 +254,7 @@ const Cart = () => {
 
   useEffect(() => {
     fetchCartItems();
+    getUserData();
   }, []);
 
   return (
@@ -289,7 +292,7 @@ const Cart = () => {
                   </div>
                 </div>
               </div>
-              <div className="h-[500px] overflow-y-auto p-5">
+              <div className="overflow-y-auto p-5">
                 {cartItems.map((cartItem) => (
                   <div
                     key={cartItem._id}
@@ -402,10 +405,17 @@ const Cart = () => {
                   <div className="flex items-center border-b border-gray-200">
                     <button
                       onClick={handlePromo}
-                      className="rounded-lg w-full bg-black py-2.5 px-4 text-white text-sm font-semibold text-center mb-8 transition-all duration-500 hover:bg-black/80"
+                      className="rounded-lg w-full bg-black py-2.5 px-4 text-white text-sm font-semibold text-center transition-all duration-500 hover:bg-black/80"
                     >
                       Apply
                     </button>
+                  </div>
+                  <div className="mt-2 text-gray-500">
+                    <p>Delivery Address : {location}</p>
+                    <p className="text-sm">
+                      <span className="text-red-500">Not right address ?</span>{" "}
+                      Change the address in your profile.
+                    </p>
                   </div>
                   <div className="flex items-center justify-between py-8">
                     <p className="font-medium text-xl leading-8 text-black">
