@@ -105,6 +105,7 @@ const Orders: React.FC = () => {
         return acc;
       }, {});
       setStatus(statusMap);
+      console.log(data)
     } catch (error) {
       toast.error("Failed to fetch orders");
       console.error("Failed to fetch orders:", error.message);

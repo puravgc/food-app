@@ -198,10 +198,13 @@ const Cart = () => {
       const data = await postOrder();
       esewaIntegration(data);
       removeAllCartItems();
+      settotalCartItems(0);
       return;
     }
     postOrder();
     removeAllCartItems();
+    settotalCartItems(0);
+    navigate("/myorders");
   };
 
   const removeAllCartItems = async () => {
@@ -413,8 +416,16 @@ const Cart = () => {
                   <div className="mt-2 text-gray-500">
                     <p>Delivery Address : {location}</p>
                     <p className="text-sm">
-                      <span className="text-red-500">Not right address ?</span>{" "}
-                      Change the address in your profile.
+                      <span className="text-red-500">Not your address ?</span>{" "}
+                      Change the address in your{" "}
+                      <span
+                        className="font-bold hover:underline cursor-pointer"
+                        onClick={() => {
+                          navigate("/profile");
+                        }}
+                      >
+                        profile
+                      </span>
                     </p>
                   </div>
                   <div className="flex items-center justify-between py-8">
