@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 import { RxCross2 } from "react-icons/rx";
 import toast from "react-hot-toast";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 interface OrderItem {
   _id: string;
@@ -38,14 +38,12 @@ const OrderStatus = {
 };
 
 const Orders: React.FC = () => {
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [status, setStatus] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const socketConnection = io("http://localhost:5000");
-    setSocket(socketConnection);
+    const socketConnection = io("https://food-app-backend-topaz.vercel.app/");
 
     socketConnection.on("cartdetails", () => {
       toast.success("NEW ORDER!!");
@@ -66,7 +64,7 @@ const Orders: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/orderstatus/${orderId}`,
+        `https://food-app-backend-topaz.vercel.app/orderstatus/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -85,7 +83,7 @@ const Orders: React.FC = () => {
           [orderId]: previousStatus,
         }));
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Error updating status");
       setStatus((prev) => ({
         ...prev,
@@ -97,7 +95,9 @@ const Orders: React.FC = () => {
 
   const getOrders = async () => {
     try {
-      const response = await fetch("http://localhost:5000/getadminorder");
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/getadminorder"
+      );
       const data: Order[] = await response.json();
       setOrders(data || []);
       const statusMap = data.reduce((acc: Record<string, string>, order) => {
@@ -105,8 +105,8 @@ const Orders: React.FC = () => {
         return acc;
       }, {});
       setStatus(statusMap);
-      console.log(data)
-    } catch (error) {
+      console.log(data);
+    } catch (error: any) {
       toast.error("Failed to fetch orders");
       console.error("Failed to fetch orders:", error.message);
     } finally {
@@ -117,7 +117,7 @@ const Orders: React.FC = () => {
   const handleDeleteOrder = async (orderId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/deleteorder/${orderId}`,
+        `https://food-app-backend-topaz.vercel.app/deleteorder/${orderId}`,
         {
           method: "DELETE",
         }
@@ -130,7 +130,7 @@ const Orders: React.FC = () => {
         toast.error("Failed to delete order");
         console.error("Failed to delete order:", result.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Failed to delete order");
       console.error("Failed to delete order:", error.message);
     }
