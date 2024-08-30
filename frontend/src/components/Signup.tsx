@@ -5,14 +5,23 @@ import { userContext } from "../context/userContext";
 import { GoEye } from "react-icons/go";
 import { GoEyeClosed } from "react-icons/go";
 
-const Signup = () => {
+interface UserContextType {
+  username: string;
+  setusername: React.Dispatch<React.SetStateAction<string>>;
+  email: string;
+  setemail: React.Dispatch<React.SetStateAction<string>>;
+  password: string;
+  setpassword: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [showpassword, setshowpassword] = useState(false);
   const { username, setusername, email, setemail, password, setpassword } =
-    useContext(userContext);
+    useContext<UserContextType>(userContext);
   const [passwordError, setPasswordError] = useState("");
 
-  const validatePassword = (password) => {
+  const validatePassword = (password: string): boolean => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
     if (!passwordRegex.test(password)) {
@@ -29,7 +38,7 @@ const Signup = () => {
   const handleGoogleSignup = () => {
     window.open("http://localhost:5000/auth/google/callback", "_self");
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(password);
     console.log(validatePassword(password));

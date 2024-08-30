@@ -14,7 +14,7 @@ const Login = () => {
   const [password, setpassword] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [showpassword, setshowpassword] = useState(false);
+  const [showpassword, setshowpassword] = useState<boolean>(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 

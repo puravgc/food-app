@@ -2,7 +2,6 @@ import React, { useEffect, useState, ChangeEvent } from "react";
 import { toast } from "react-hot-toast";
 import Modal from "react-modal";
 
-// Define the user state type
 interface User {
   firstName: string;
   lastName: string;

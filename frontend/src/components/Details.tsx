@@ -3,11 +3,20 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { userContext } from "../context/userContext";
 
+interface UserContextType {
+  username: string;
+  setusername: React.Dispatch<React.SetStateAction<string>>;
+  email: string;
+  setemail: React.Dispatch<React.SetStateAction<string>>;
+  password: string;
+  setpassword: React.Dispatch<React.SetStateAction<string>>;
+}
+
 const Details: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { username, setusername, email, setemail, password, setpassword } =
-    useContext(userContext);
+    useContext<UserContextType>(userContext);
 
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -139,7 +148,7 @@ const Details: React.FC = () => {
                     <input
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
-                      type="text"
+                      type="tel"
                       id="phoneNumber"
                       name="phoneNumber"
                       className="bg-white mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
