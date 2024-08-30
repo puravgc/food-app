@@ -5,6 +5,8 @@ import { userContext } from "../context/userContext";
 import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLoading } from "react-icons/ai";
 import ForgotPassModal from "./ForgotPassModal";
+import { GoEye } from "react-icons/go";
+import { GoEyeClosed } from "react-icons/go";
 const Login = () => {
   const navigate = useNavigate();
   const { setisLoggedIn } = useContext(userContext);
@@ -12,6 +14,7 @@ const Login = () => {
   const [password, setpassword] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [showpassword, setshowpassword] = useState(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
@@ -47,10 +50,10 @@ const Login = () => {
     window.open("http://localhost:5000/auth/google/callback", "_self");
   };
 
-  return (  
+  return (
     <div className="">
       <div
-        className="flex justify-center items-center h-screen"
+        className="flex justify-center items-center h-screen px-5"
         style={{
           backgroundImage: "url('/authbg.jpg')",
           backgroundRepeat: "no-repeat",
@@ -58,7 +61,7 @@ const Login = () => {
           backgroundSize: "cover",
         }}
       >
-        <div className="h-2/3 bg-gray-100 lg:w-1/2 flex flex-col items-center justify-center shadow-2xl rounded-2xl backdrop-blur-lg bg-opacity-50 p-10">
+        <div className="h-fit bg-gray-100 lg:w-1/2 flex flex-col items-center justify-center shadow-2xl rounded-2xl backdrop-blur-lg bg-opacity-50 p-10 mb-10">
           <div className="max-w-md w-full">
             <h1 className="text-3xl font-semibold mb-6 text-black text-center">
               Log In
@@ -86,26 +89,47 @@ const Login = () => {
                   Email
                 </label>
                 <input
+                  required
                   value={email}
                   onChange={(e) => setemail(e.target.value)}
-                  type="text"
+                  type="email"
                   id="email"
                   name="email"
                   className=" bg-white mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
                 />
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <input
-                  value={password}
-                  onChange={(e) => setpassword(e.target.value)}
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="bg-white mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
-                />
+                <div className="relative">
+                  <input
+                    required
+                    value={password}
+                    onChange={(e) => setpassword(e.target.value)}
+                    type={showpassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    className="bg-white mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                  />
+                  <div className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
+                    {showpassword ? (
+                      <GoEye
+                        className="h-6 w-6 text-gray-500"
+                        onClick={() => {
+                          setshowpassword(!showpassword);
+                        }}
+                      />
+                    ) : (
+                      <GoEyeClosed
+                        className="h-6 w-6 text-gray-500"
+                        onClick={() => {
+                          setshowpassword(!showpassword);
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
               <div onClick={() => setIsModalOpen(true)}>
                 <p className="text-sm cursor-pointer">Forgot Password?</p>

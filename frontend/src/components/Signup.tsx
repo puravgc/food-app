@@ -1,22 +1,47 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bounce, toast } from "react-toastify";
-import { userContext } from "../context/userContext";
 import { FcGoogle } from "react-icons/fc";
+import { userContext } from "../context/userContext";
+import { GoEye } from "react-icons/go";
+import { GoEyeClosed } from "react-icons/go";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [showpassword, setshowpassword] = useState(false);
   const { username, setusername, email, setemail, password, setpassword } =
     useContext(userContext);
+  const [passwordError, setPasswordError] = useState("");
+
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      setPasswordError(
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and is at least 8 characters long."
+      );
+      return false;
+    } else {
+      setPasswordError("");
+      return true;
+    }
+  };
 
   const handleGoogleSignup = () => {
     window.open("http://localhost:5000/auth/google/callback", "_self");
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(password);
+    console.log(validatePassword(password));
+    if (validatePassword(password)) {
+      navigate("/details");
+    }
   };
 
   return (
     <div>
       <div
-        className="flex justify-center items-center h-screen"
+        className="flex justify-center items-center min-h-screen px-5"
         style={{
           backgroundImage: "url('/authbg.jpg')",
           backgroundRepeat: "no-repeat",
@@ -24,8 +49,8 @@ const Signup = () => {
           backgroundSize: "cover",
         }}
       >
-        <div className="w-full bg-gray-100 lg:w-1/2 flex flex-col items-center justify-center py-10 backdrop-blur-lg bg-opacity-50 rounded-2xl shadow-2xl">
-          <div className=" w-full">
+        <div className="w-full bg-gray-100 md:w-3/4 lg:w-1/2 flex flex-col items-center justify-center py-10 backdrop-blur-lg bg-opacity-50 rounded-2xl shadow-2xl">
+          <div className="w-full">
             <ul className="steps flex justify-between w-full">
               <li className="step step-primary flex-1 text-center py-2">
                 Register
@@ -33,42 +58,33 @@ const Signup = () => {
               <li className="step flex-1 text-center py-2">Details</li>
             </ul>
           </div>
-          <div className="max-w-md w-full p-6">
-            <h1 className="text-3xl font-semibold mb-6 text-black text-center">
+          <div className="w-full max-w-md px-6">
+            <h1 className="text-2xl lg:text-3xl font-semibold mb-4 lg:mb-6 text-black text-center">
               Sign Up
             </h1>
-            <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
-              Join to Our Community with all time access and free{" "}
+            <h1 className="text-xs lg:text-sm font-semibold mb-4 lg:mb-6 text-gray-500 text-center">
+              Join Our Community with all-time access and free{" "}
             </h1>
-            <div className="mt-4 flex flex-col lg:flex-row items-center justify-between">
-              <div className="w-full mb-2 lg:mb-0">
-                <button
-                  onClick={handleGoogleSignup}
-                  type="button"
-                  className="w-full flex justify-center items-center gap-2 bg-white text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300"
-                >
-                  <FcGoogle className="text-black h-6 w-6" /> Sign Up with
-                  Google{" "}
-                </button>
-              </div>
+            <div className="mt-4 flex flex-col lg:flex-row items-center justify-between w-full">
+              <button
+                onClick={handleGoogleSignup}
+                type="button"
+                className="w-full flex justify-center items-center gap-2 bg-white text-xs lg:text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300"
+              >
+                <FcGoogle className="text-black h-6 w-6" /> Sign Up with Google
+              </button>
             </div>
-            <div className="mt-4 text-sm text-gray-600 text-center">
+            <div className="mt-4 text-xs lg:text-sm text-gray-600 text-center">
               <p>or with email</p>
             </div>
-            <form
-              onSubmit={() => {
-                navigate("/details");
-              }}
-              className="space-y-4"
-            >
+            <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-xs lg:text-sm font-medium text-gray-700">
                   Username
                 </label>
                 <input
-                  onChange={(e) => {
-                    setusername(e.target.value);
-                  }}
+                  required
+                  onChange={(e) => setusername(e.target.value)}
                   value={username}
                   type="text"
                   id="username"
@@ -77,55 +93,75 @@ const Signup = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-xs lg:text-sm font-medium text-gray-700">
                   Email
                 </label>
                 <input
-                  onChange={(e) => {
-                    setemail(e.target.value);
-                  }}
+                  required
+                  onChange={(e) => setemail(e.target.value)}
                   value={email}
-                  type="text"
+                  type="email"
                   id="email"
                   name="email"
                   className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
+              <div className="relative">
+                <label className="block text-xs lg:text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <input
-                  onChange={(e) => {
-                    setpassword(e.target.value);
-                  }}
-                  value={password}
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
-                />
+                <div className="relative">
+                  <input
+                    onChange={(e) => {
+                      setpassword(e.target.value);
+                      setPasswordError("");
+                      console.log(passwordError);
+                    }}
+                    value={password}
+                    type={showpassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    className="mt-1 p-2 pr-10 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"
+                  />
+                  {passwordError && (
+                    <p className="text-red-500 text-xs mt-1">{passwordError}</p>
+                  )}
+                  <div className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
+                    {showpassword ? (
+                      <GoEye
+                        className="h-6 w-6 text-gray-500"
+                        onClick={() => {
+                          setshowpassword(!showpassword);
+                        }}
+                      />
+                    ) : (
+                      <GoEyeClosed
+                        className="h-6 w-6 text-gray-500"
+                        onClick={() => {
+                          setshowpassword(!showpassword);
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
+
               <div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center items-center bg-red-600 text-white p-2 rounded-md hover:bg-red-500  focus:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
+                  className="w-full flex justify-center items-center bg-red-600 text-white p-2 rounded-md hover:bg-red-500 focus:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
                 >
                   Sign Up
                 </button>
               </div>
             </form>
             <div
-              className="mt-4 text-sm text-gray-600 text-center"
-              onClick={() => {
-                navigate("/login");
-              }}
+              className="mt-4 text-xs lg:text-sm text-gray-600 text-center cursor-pointer"
+              onClick={() => navigate("/login")}
             >
               <p>
                 Already have an account?{" "}
-                <a href="#" className="text-black hover:underline">
-                  Login here
-                </a>
+                <span className="text-black hover:underline">Login here</span>
               </p>
             </div>
           </div>

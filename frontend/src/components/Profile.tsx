@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
 
   return (
     <div
-      className="h-screen w-screen flex justify-center items-start pt-16 px-4"
+      className="h-[90vh] w-screen overflow-y-auto flex justify-center items-baseline pt-16 px-4"
       style={{
         backgroundImage: "url('/profilebg.jpg')",
         backgroundRepeat: "no-repeat",
