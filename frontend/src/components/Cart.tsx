@@ -17,7 +17,7 @@ interface CartItems {
 }
 
 const Cart = () => {
-  const socket = io("http://localhost:5000");
+  const socket = io("https://food-app-backend-topaz.vercel.app");
   const navigate = useNavigate();
   const [cartItems, setcartItems] = useState<CartItems[]>([]);
   const [totalPrice, settotalPrice] = useState<number>(0);
@@ -28,13 +28,16 @@ const Cart = () => {
   const { totalCartItems, settotalCartItems } = useContext(categoryContext);
   const fetchCartItems = async () => {
     try {
-      const response = await fetch("http://localhost:5000/getcart", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/getcart",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         setcartItems(data.cartItems);
@@ -59,7 +62,7 @@ const Cart = () => {
   const deleteCart = async (id: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/removefromcart/${id}`,
+        `https://food-app-backend-topaz.vercel.app/removefromcart/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -79,14 +82,17 @@ const Cart = () => {
 
   const updateQuantity = async (id: string, newQuantity: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/updatecart/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ quantity: newQuantity }),
-      });
+      const response = await fetch(
+        `https://food-app-backend-topaz.vercel.app/updatecart/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ quantity: newQuantity }),
+        }
+      );
       const data = await response.json();
       fetchCartItems();
     } catch (error) {
@@ -96,13 +102,16 @@ const Cart = () => {
 
   const getUserData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/getuser", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/getuser",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const data = await response.json();
       setlocation(data.address);
       return data.promoCode;
@@ -113,14 +122,17 @@ const Cart = () => {
 
   const postOrder = async () => {
     try {
-      const response = await fetch("http://localhost:5000/postorder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ cartItems, totalPrice }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/postorder",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ cartItems, totalPrice }),
+        }
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -156,13 +168,16 @@ const Cart = () => {
 
   const esewaIntegration = async (orderId: string) => {
     try {
-      const response = await fetch("http://localhost:5000/createesewaorder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ totalPrice, orderId: orderId }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/createesewaorder",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ totalPrice, orderId: orderId }),
+        }
+      );
       if (response.ok) {
         const responseData = await response.json();
         console.log(responseData.formData);
@@ -209,13 +224,16 @@ const Cart = () => {
 
   const removeAllCartItems = async () => {
     try {
-      const response = await fetch("http://localhost:5000/removeallcart", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/removeallcart",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const data = await response.json();
       if (!data.success) {
         toast.error(data.message);
@@ -232,16 +250,19 @@ const Cart = () => {
       toast.error("You have already used a promo code");
       return;
     } else {
-      const response = await fetch("http://localhost:5000/addoffer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          code: promo,
-        }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/addoffer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            code: promo,
+          }),
+        }
+      );
       const data = await response.json();
       if (data.success) {
         toast.success(data.message);

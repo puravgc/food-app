@@ -28,11 +28,14 @@ const MyOrders: React.FC = () => {
 
   const getOrders = async () => {
     try {
-      const response = await fetch("http://localhost:5000/getorder", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/getorder",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }

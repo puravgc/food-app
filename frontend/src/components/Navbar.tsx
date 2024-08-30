@@ -16,12 +16,15 @@ const Navbar = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/getcart", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/getcart",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       const data = await response.json();
       if (data.success === true) {
         data.cartItems.forEach((item) => {

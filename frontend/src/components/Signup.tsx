@@ -36,7 +36,10 @@ const Signup: React.FC = () => {
   };
 
   const handleGoogleSignup = () => {
-    window.open("http://localhost:5000/auth/google/callback", "_self");
+    window.open(
+      "https://food-app-backend-topaz.vercel.app/auth/google/callback",
+      "_self"
+    );
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

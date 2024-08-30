@@ -19,7 +19,6 @@ import Profile from "./components/Profile";
 import MyOrders from "./components/MyOrders";
 import NewPassword from "./components/NewPassword";
 
-// Initialize contexts with default values
 const categoryContextValue: CategoryContextType = {
   selectedCategory: "beef",
   setselectedCategory: () => {},

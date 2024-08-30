@@ -38,14 +38,17 @@ const Profile: React.FC = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/edituser", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(user),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/edituser",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(user),
+        }
+      );
       const data = await response.json();
       if (data.success) {
         toast.success(data.message);
@@ -69,17 +72,20 @@ const Profile: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/changepassword", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/changepassword",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            currentPassword,
+            newPassword,
+          }),
+        }
+      );
       const data = await response.json();
       if (data.success) {
         toast.success(data.message);
@@ -98,11 +104,14 @@ const Profile: React.FC = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/getuser", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/getuser",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setUser(data);

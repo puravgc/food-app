@@ -43,13 +43,16 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/forgotpassword", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/forgotpassword",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const data = await response.json();
 
@@ -70,13 +73,16 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/verifyotp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, otp }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/verifyotp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, otp }),
+        }
+      );
       const data = await response.json();
       console.log(data);
       if (data.success === true) {

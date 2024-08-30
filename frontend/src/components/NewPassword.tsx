@@ -16,7 +16,7 @@ const NewPassword = () => {
     decodedEmail,
     "testsecret"
   ).toString(CryptoJS.enc.Utf8);
-  console.log(decryptedEmail)
+  console.log(decryptedEmail);
   const handleSubmit = async (e: React.FormEvent) => {
     setLoading(true);
     e.preventDefault();
@@ -25,13 +25,16 @@ const NewPassword = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:5000/resetpassword", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ newPassword, email:decryptedEmail }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/resetpassword",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newPassword, email: decryptedEmail }),
+        }
+      );
       const data = await response.json();
       console.log(data);
       if (data.success === true) {

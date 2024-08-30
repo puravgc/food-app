@@ -21,14 +21,17 @@ export default function CartModal({
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
   const cartHandler = async () => {
-    const response = await fetch("http://localhost:5000/addtocart", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ productName: name, price, quantity, image }),
-    });
+    const response = await fetch(
+      "https://food-app-backend-topaz.vercel.app/addtocart",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ productName: name, price, quantity, image }),
+      }
+    );
     const data = await response.json();
     if (data.success === false) {
       toast.error(data.message);

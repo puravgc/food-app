@@ -22,13 +22,16 @@ const Login = () => {
     e.preventDefault();
     setloading(true);
     try {
-      const response = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
       const data = await response.json();
       if (data.success) {
         localStorage.setItem("token", data.token);
@@ -47,7 +50,10 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.open("http://localhost:5000/auth/google/callback", "_self");
+    window.open(
+      "https://food-app-backend-topaz.vercel.app/auth/google/callback",
+      "_self"
+    );
   };
 
   return (

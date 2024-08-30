@@ -44,21 +44,24 @@ const Details: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-          firstName,
-          lastName,
-          phoneNumber,
-          address,
-        }),
-      });
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+            firstName,
+            lastName,
+            phoneNumber,
+            address,
+          }),
+        }
+      );
       const data = await response.json();
       if (data.success) {
         setLoading(false);
