@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { GoPerson } from "react-icons/go";
@@ -10,8 +10,15 @@ import logo from "/logo.png";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isLoggedIn, setisLoggedIn } = useContext(userContext);
-  const { totalCartItems, settotalCartItems } = useContext(categoryContext);
+  const userContextValue = useContext(userContext);
+  const categoryContextValue = useContext(categoryContext);
+
+  if (!userContextValue || !categoryContextValue) {
+    throw new Error("Context values are not available.");
+  }
+
+  const { isLoggedIn, setisLoggedIn } = userContextValue;
+  const { totalCartItems, settotalCartItems } = categoryContextValue;
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -27,8 +34,8 @@ const Navbar = () => {
       );
       const data = await response.json();
       if (data.success === true) {
-        data.cartItems.forEach((item) => {
-          settotalCartItems((prevState) => prevState + item.quantity);
+        data.cartItems.forEach((item: any) => {
+          settotalCartItems((prevState: number) => prevState + item.quantity);
         });
       }
     } catch (error) {
@@ -47,7 +54,7 @@ const Navbar = () => {
     } else {
       setisLoggedIn(false);
     }
-  }, [isLoggedIn]);
+  }, [setisLoggedIn]);
 
   return (
     <div className="w-full">

@@ -19,24 +19,6 @@ import Profile from "./components/Profile";
 import MyOrders from "./components/MyOrders";
 import NewPassword from "./components/NewPassword";
 
-const categoryContextValue: CategoryContextType = {
-  selectedCategory: "beef",
-  setselectedCategory: () => {},
-  totalCartItems: 0,
-  settotalCartItems: () => {},
-};
-
-const userContextValue: UserContextType = {
-  isLoggedIn: false,
-  setisLoggedIn: () => {},
-  username: "",
-  setusername: () => {},
-  email: "",
-  setemail: () => {},
-  password: "",
-  setpassword: () => {},
-};
-
 const App: React.FC = () => {
   const [username, setusername] = useState<string>("");
   const [email, setemail] = useState<string>("");
@@ -45,29 +27,29 @@ const App: React.FC = () => {
   const [isLoggedIn, setisLoggedIn] = useState<boolean>(false);
   const [totalCartItems, settotalCartItems] = useState<number>(0);
 
+  const categoryContextValue: CategoryContextType = {
+    selectedCategory,
+    setselectedCategory,
+    totalCartItems,
+    settotalCartItems,
+  };
+
+  const userContextValue: UserContextType = {
+    isLoggedIn,
+    setisLoggedIn,
+    username,
+    setusername,
+    email,
+    setemail,
+    password,
+    setpassword,
+  };
+
   return (
     <BrowserRouter>
       <div className="h-screen w-screen overflow-hidden">
-        <categoryContext.Provider
-          value={{
-            selectedCategory,
-            setselectedCategory,
-            totalCartItems,
-            settotalCartItems,
-          }}
-        >
-          <userContext.Provider
-            value={{
-              isLoggedIn,
-              setisLoggedIn,
-              username,
-              setusername,
-              email,
-              setemail,
-              password,
-              setpassword,
-            }}
-          >
+        <categoryContext.Provider value={categoryContextValue}>
+          <userContext.Provider value={userContextValue}>
             <Navbar />
             <Toaster />
             <Routes>

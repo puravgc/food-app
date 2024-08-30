@@ -1,24 +1,22 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import { userContext } from "../context/userContext";
-import { GoEye } from "react-icons/go";
-import { GoEyeClosed } from "react-icons/go";
-
-interface UserContextType {
-  username: string;
-  setusername: React.Dispatch<React.SetStateAction<string>>;
-  email: string;
-  setemail: React.Dispatch<React.SetStateAction<string>>;
-  password: string;
-  setpassword: React.Dispatch<React.SetStateAction<string>>;
-}
+import { userContext, UserContextType } from "../context/userContext";
+import { GoEye, GoEyeClosed } from "react-icons/go";
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
   const [showpassword, setshowpassword] = useState(false);
+  const contextValue = useContext<UserContextType | undefined>(userContext);
+
+  if (!contextValue) {
+    throw new Error(
+      "Context value is undefined. Make sure the component is wrapped in a UserContext.Provider."
+    );
+  }
+
   const { username, setusername, email, setemail, password, setpassword } =
-    useContext<UserContextType>(userContext);
+    contextValue;
   const [passwordError, setPasswordError] = useState("");
 
   const validatePassword = (password: string): boolean => {
@@ -26,7 +24,7 @@ const Signup: React.FC = () => {
 
     if (!passwordRegex.test(password)) {
       setPasswordError(
-        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and is at least 8 characters long."
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and be at least 8 characters long."
       );
       return false;
     } else {
@@ -41,10 +39,9 @@ const Signup: React.FC = () => {
       "_self"
     );
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(password);
-    console.log(validatePassword(password));
     if (validatePassword(password)) {
       navigate("/details");
     }

@@ -1,4 +1,3 @@
-import React from "react";
 import illustration from "/illustration.png";
 import { FlipWords } from "./ui/flip-words";
 import { useNavigate } from "react-router-dom";

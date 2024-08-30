@@ -7,9 +7,14 @@ import { AiOutlineLoading } from "react-icons/ai";
 import ForgotPassModal from "./ForgotPassModal";
 import { GoEye } from "react-icons/go";
 import { GoEyeClosed } from "react-icons/go";
+
 const Login = () => {
   const navigate = useNavigate();
-  const { setisLoggedIn } = useContext(userContext);
+  const context = useContext(userContext);
+  if (!context) {
+    throw new Error("userContext is not provided");
+  }
+  const { setisLoggedIn } = context;
   const [email, setemail] = useState<string>("");
   const [password, setpassword] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
@@ -137,7 +142,7 @@ const Login = () => {
                   </div>
                 </div>
               </div>
-              <div onClick={() => setIsModalOpen(true)}>
+              <div onClick={handleOpenModal}>
                 <p className="text-sm cursor-pointer">Forgot Password?</p>
               </div>
               <div>

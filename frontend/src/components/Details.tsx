@@ -3,20 +3,19 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { userContext } from "../context/userContext";
 
-interface UserContextType {
-  username: string;
-  setusername: React.Dispatch<React.SetStateAction<string>>;
-  email: string;
-  setemail: React.Dispatch<React.SetStateAction<string>>;
-  password: string;
-  setpassword: React.Dispatch<React.SetStateAction<string>>;
-}
-
 const Details: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const context = useContext(userContext);
+
+  if (!context) {
+    throw new Error(
+      "Details component must be used within a UserContextProvider"
+    );
+  }
+
   const { username, setusername, email, setemail, password, setpassword } =
-    useContext<UserContextType>(userContext);
+    context;
 
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -64,7 +63,6 @@ const Details: React.FC = () => {
       );
       const data = await response.json();
       if (data.success) {
-        setLoading(false);
         toast.success(data.message);
         navigate("/login");
         setusername("");
@@ -75,11 +73,12 @@ const Details: React.FC = () => {
         setPhoneNumber("");
         setAddress("");
       } else {
-        setLoading(false);
         toast.error(data.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error submitting form:", error);
+      toast.error("An error occurred. Please try again.");
+    } finally {
       setLoading(false);
     }
   };

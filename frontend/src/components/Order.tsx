@@ -7,8 +7,8 @@ import { userContext } from "../context/userContext";
 import { toast } from "react-hot-toast";
 
 const Order: React.FC = () => {
-  const { selectedCategory } = useContext(categoryContext);
-  const { setisLoggedIn } = useContext(userContext);
+  const categoryCtx = useContext(categoryContext);
+  const userCtx = useContext(userContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const Order: React.FC = () => {
     const token = urlParams.get("token");
     if (token) {
       localStorage.setItem("token", token);
-      setisLoggedIn(true);
+      userCtx?.setisLoggedIn(true);
       toast.success("Logged in successfully!");
       navigate("/order");
     } else {
@@ -25,7 +25,7 @@ const Order: React.FC = () => {
         navigate("/login");
       }
     }
-  }, [setisLoggedIn, navigate]);
+  }, [userCtx, navigate]);
 
   return (
     <div className="flex">
@@ -33,7 +33,7 @@ const Order: React.FC = () => {
         <Sidebar />
       </div>
       <div className="w-full h-screen overflow-y-auto pb-24">
-        <Foods selectedCategory={selectedCategory} />
+        <Foods selectedCategory={categoryCtx?.selectedCategory || ""} />
       </div>
     </div>
   );

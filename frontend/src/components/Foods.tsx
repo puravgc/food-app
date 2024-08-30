@@ -62,7 +62,7 @@ const Foods: React.FC<FoodsProps> = ({ selectedCategory }) => {
     <div className="flex justify-center items-center p-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {foodData.length > 0 &&
-          foodData.map((food) => {
+          foodData.map((food: any) => {
             const price = (food.idMeal % 10) + 10;
             return (
               <div key={food.idMeal} className="w-full max-w-xs">

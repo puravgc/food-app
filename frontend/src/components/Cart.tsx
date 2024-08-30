@@ -25,7 +25,8 @@ const Cart = () => {
   const [paymentOption, setpaymentOption] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [location, setlocation] = useState<string>("");
-  const { totalCartItems, settotalCartItems } = useContext(categoryContext);
+  const { totalCartItems, settotalCartItems } =
+    useContext(categoryContext) || {};
   const fetchCartItems = async () => {
     try {
       const response = await fetch(
@@ -72,7 +73,9 @@ const Cart = () => {
         }
       );
       const data = await response.json();
-      await settotalCartItems(totalCartItems - data.quantity);
+      if (settotalCartItems) {
+        settotalCartItems((prev) => prev - (data.quantity || 0));
+      }
       fetchCartItems();
       calculateTotal(cartItems);
     } catch (error) {
@@ -82,7 +85,7 @@ const Cart = () => {
 
   const updateQuantity = async (id: string, newQuantity: number) => {
     try {
-      const response = await fetch(
+      await fetch(
         `https://food-app-backend-topaz.vercel.app/updatecart/${id}`,
         {
           method: "PATCH",
@@ -93,7 +96,6 @@ const Cart = () => {
           body: JSON.stringify({ quantity: newQuantity }),
         }
       );
-      const data = await response.json();
       fetchCartItems();
     } catch (error) {
       console.log(error);
@@ -213,12 +215,16 @@ const Cart = () => {
       const data = await postOrder();
       esewaIntegration(data);
       removeAllCartItems();
-      settotalCartItems(0);
+      if (settotalCartItems) {
+        settotalCartItems(0);
+      }
       return;
     }
     postOrder();
     removeAllCartItems();
-    settotalCartItems(0);
+    if (settotalCartItems) {
+      settotalCartItems(0);
+    }
     navigate("/myorders");
   };
 
@@ -357,7 +363,9 @@ const Cart = () => {
                               if (cartItem.quantity <= 1) {
                                 deleteCart(cartItem._id);
                               }
-                              settotalCartItems((prev) => prev - 1);
+                              if (settotalCartItems) {
+                                settotalCartItems((prev) => prev - 1);
+                              }
                             }}
                             className="group rounded-l-xl px-4 py-2 sm:px-5 sm:py-[18px] border border-gray-200 flex items-center justify-center shadow-sm transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus:outline-none"
                           >
@@ -366,7 +374,7 @@ const Cart = () => {
                           <input
                             type="text"
                             className="border-y border-gray-200 outline-none text-sm sm:text-lg text-gray-900 font-semibold w-16 sm:w-full placeholder:text-gray-900 py-2 sm:py-[15px] text-center bg-transparent"
-                            placeholder={cartItem.quantity}
+                            placeholder={`${cartItem.quantity}`}
                           />
                           <button
                             onClick={() => {
@@ -374,7 +382,10 @@ const Cart = () => {
                                 cartItem._id,
                                 cartItem.quantity + 1
                               );
-                              settotalCartItems((prev) => prev + 1);
+
+                              if (settotalCartItems) {
+                                settotalCartItems((prev) => prev + 1);
+                              }
                             }}
                             className="group rounded-r-xl px-4 py-2 sm:px-5 sm:py-[18px] border border-gray-200 flex items-center justify-center shadow-sm transition-all duration-500 hover:bg-gray-50 hover:border-gray-300 hover:shadow-gray-300 focus:outline-none"
                           >

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MdDelete } from "react-icons/md";
+
 
 interface CartItem {
   _id: string;

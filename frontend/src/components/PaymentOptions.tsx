@@ -1,6 +1,14 @@
-import React from "react";
+import { Dispatch, SetStateAction } from "react";
 
-const PaymentOptions = ({ paymentOption, setpaymentOption }) => {
+interface PaymentOptionsProps {
+  paymentOption: string;
+  setpaymentOption: Dispatch<SetStateAction<string>>;
+}
+
+const PaymentOptions: React.FC<PaymentOptionsProps> = ({
+  paymentOption,
+  setpaymentOption,
+}) => {
   return (
     <div className="bg-gray-100 rounded-lg pb-3 flex flex-col justify-center items-center">
       <h3 className="mb-5 text-lg font-medium text-gray-500">

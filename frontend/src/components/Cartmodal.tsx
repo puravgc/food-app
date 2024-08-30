@@ -3,15 +3,29 @@ import { Fragment, useContext, useState } from "react";
 import { categoryContext } from "../context/categoryContext";
 import { toast } from "react-hot-toast";
 
-export default function CartModal({
+interface CartModalProps {
+  cartModal: boolean;
+  setcartModal: (open: boolean) => void;
+  name: string;
+  image: string;
+  price: number;
+}
+
+const CartModal: React.FC<CartModalProps> = ({
   cartModal,
   setcartModal,
   name,
   image,
   price,
-}) {
+}) => {
   const [quantity, setQuantity] = useState<number>(1);
-  const { settotalCartItems } = useContext(categoryContext);
+  const context = useContext(categoryContext);
+
+  if (!context) {
+    throw new Error("CartModal must be used within a CategoryContextProvider");
+  }
+
+  const { settotalCartItems } = context;
 
   const increaseQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -20,27 +34,33 @@ export default function CartModal({
   const decreaseQuantity = () => {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
+
   const cartHandler = async () => {
-    const response = await fetch(
-      "https://food-app-backend-topaz.vercel.app/addtocart",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ productName: name, price, quantity, image }),
+    try {
+      const response = await fetch(
+        "https://food-app-backend-topaz.vercel.app/addtocart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ productName: name, price, quantity, image }),
+        }
+      );
+      const data = await response.json();
+      if (!data.success) {
+        toast.error(data.message);
+        setcartModal(false);
+        return;
       }
-    );
-    const data = await response.json();
-    if (data.success === false) {
-      toast.error(data.message);
+      toast.success(data.message);
       setcartModal(false);
-      return;
+      settotalCartItems((prevItems: number) => prevItems + quantity);
+    } catch (error) {
+      toast.error("Failed to add item to cart. Please try again.");
+      console.error("Failed to add item to cart:", error);
     }
-    toast.success(data.message);
-    setcartModal(false);
-    settotalCartItems((prevItems) => prevItems + quantity);
   };
 
   return (
@@ -107,9 +127,7 @@ export default function CartModal({
             <div className="mt-4">
               <Button
                 className="inline-flex items-center px-5 py-2 text-lg font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                onClick={() => {
-                  cartHandler();
-                }}
+                onClick={cartHandler}
               >
                 Add to Cart
               </Button>
@@ -119,4 +137,6 @@ export default function CartModal({
       </Dialog>
     </Transition>
   );
-}
+};
+
+export default CartModal;

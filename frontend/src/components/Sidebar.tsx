@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { categoryContext } from "../context/categoryContext";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 
-// Define type for category
 interface Category {
   strCategory: string;
 }
@@ -11,7 +10,13 @@ interface Category {
 const Sidebar: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { selectedCategory, setselectedCategory } = useContext(categoryContext);
+  const context = useContext(categoryContext);
+
+  if (!context) {
+    throw new Error("Sidebar must be used within a CategoryContextProvider");
+  }
+
+  const { selectedCategory, setselectedCategory } = context;
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const fetchCategories = async () => {
@@ -19,14 +24,12 @@ const Sidebar: React.FC = () => {
       const response = await fetch(
         "https://www.themealdb.com/api/json/v1/1/categories.php"
       );
-
       if (!response.ok) {
         throw new Error("Failed to fetch categories");
       }
-
       const data = await response.json();
       setCategories(data.categories);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching categories:", error.message);
     }
   };

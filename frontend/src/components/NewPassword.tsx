@@ -10,7 +10,7 @@ const NewPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const decodedEmail = decodeURIComponent(email);
+  const decodedEmail = decodeURIComponent(email || "");
 
   const decryptedEmail = CryptoJS.AES.decrypt(
     decodedEmail,
