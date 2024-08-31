@@ -70,7 +70,7 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/signup",
+    failureRedirect: "https://eat-more-delta.vercel.app/signup",
   }),
   (req, res) => {
     const { user, userExists } = req.user;
@@ -82,8 +82,8 @@ app.get(
     const userString = encodeURIComponent(JSON.stringify(user));
     const tokenString = encodeURIComponent(token);
     const redirectUrl = userExists
-      ? `http://localhost:5173/order?token=${tokenString}`
-      : `http://localhost:5173/details?user=${userString}`;
+      ? `https://eat-more-delta.vercel.app/order?token=${tokenString}`
+      : `https://eat-more-delta.vercel.app/details?user=${userString}`;
     res.redirect(redirectUrl);
   }
 );
