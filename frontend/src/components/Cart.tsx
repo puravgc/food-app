@@ -212,16 +212,19 @@ const Cart = () => {
   const handleConfirmCheckout = async () => {
     setIsModalOpen(false);
     if (paymentOption === "eSewa Payment") {
-      const data = await postOrder();
-      esewaIntegration(data);
       removeAllCartItems();
+      const data = await postOrder();
+
+      esewaIntegration(data);
+
       if (settotalCartItems) {
         settotalCartItems(0);
       }
       return;
     }
-    postOrder();
     removeAllCartItems();
+    postOrder();
+
     if (settotalCartItems) {
       settotalCartItems(0);
     }
