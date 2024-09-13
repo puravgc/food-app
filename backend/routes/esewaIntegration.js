@@ -50,7 +50,7 @@ const updateOrderAfterPayment = async (req, res) => {
     const newOrder = await Order.findById(req.transaction_uuid);
     newOrder.paymentStatus = "paid";
     await newOrder.save();
-    res.redirect("http://localhost:5173/myorders");
+    res.redirect("https://eat-more-delta.vercel.app/myorders");
   } catch (err) {
     return res.status(400).json({ error: err?.message || "No Orders found" });
   }
@@ -65,13 +65,13 @@ router.post("/createesewaorder", async (req, res) => {
     );
     const formData = {
       amount: totalPrice,
-      failure_url: "http://localhost:5173/myorders",
+      failure_url: "https://eat-more-delta.vercel.app/myorders",
       product_delivery_charge: "0",
       product_service_charge: "0",
       product_code: "EPAYTEST",
       signature: signature,
       signed_field_names: "total_amount,transaction_uuid,product_code",
-      success_url: "http://localhost:5000/esewasuccess",
+      success_url: "https://food-app-backend-topaz.vercel.app/esewasuccess",
       tax_amount: "0",
       total_amount: totalPrice,
       transaction_uuid: orderId,
