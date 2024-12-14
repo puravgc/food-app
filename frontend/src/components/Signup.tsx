@@ -20,11 +20,12 @@ const Signup: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
 
   const validatePassword = (password: string): boolean => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
 
     if (!passwordRegex.test(password)) {
       setPasswordError(
-        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and be at least 8 characters long."
+        "Password must contain at least one uppercase letter, one digit, one special character, and be at least 8 characters long."
       );
       return false;
     } else {
@@ -119,7 +120,7 @@ const Signup: React.FC = () => {
                 <label className="block text-xs lg:text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <div className="relative">
+                <div className="relative ">
                   <input
                     onChange={(e) => {
                       setpassword(e.target.value);
@@ -135,7 +136,7 @@ const Signup: React.FC = () => {
                   {passwordError && (
                     <p className="text-red-500 text-xs mt-1">{passwordError}</p>
                   )}
-                  <div className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
+                  <div className="absolute inset-y-0 right-3 flex items-center cursor-pointer ">
                     {showpassword ? (
                       <GoEye
                         className="h-6 w-6 text-gray-500"
