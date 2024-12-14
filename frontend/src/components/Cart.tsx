@@ -7,6 +7,7 @@ import { GrSubtract, GrAdd } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import PaymentOptions from "./PaymentOptions";
 import CheckoutModal from "./CheckoutModal";
+import { AiOutlineLoading } from "react-icons/ai";
 
 interface CartItems {
   _id: string;
@@ -19,6 +20,7 @@ interface CartItems {
 const Cart = () => {
   const socket = io("https://food-app-backend-topaz.vercel.app");
   const navigate = useNavigate();
+  const [loading, setloading] = useState<boolean>(false);
   const [cartItems, setcartItems] = useState<CartItems[]>([]);
   const [totalPrice, settotalPrice] = useState<number>(0);
   const [promo, setpromo] = useState<string>("");
@@ -28,6 +30,7 @@ const Cart = () => {
   const { totalCartItems, settotalCartItems } =
     useContext(categoryContext) || {};
   const fetchCartItems = async () => {
+    setloading(true);
     try {
       const response = await fetch(
         "https://food-app-backend-topaz.vercel.app/getcart",
@@ -43,12 +46,15 @@ const Cart = () => {
       if (response.ok) {
         setcartItems(data.cartItems);
         calculateTotal(data.cartItems);
+        setloading(false);
       } else {
         toast.error(data.message);
         navigate("/login");
+        setloading(false);
       }
     } catch (error) {
       console.log(error);
+      setloading(false);
     }
   };
 
@@ -326,6 +332,16 @@ const Cart = () => {
                 </div>
               </div>
               <div className="overflow-y-auto p-5">
+                {loading ? (
+                  <>
+                    <div role="status" className="flex justify-center">
+                      <AiOutlineLoading className="animate-spin h-10 w-10 text-red-500 " />
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
                 {cartItems.map((cartItem) => (
                   <div
                     key={cartItem._id}

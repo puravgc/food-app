@@ -153,7 +153,7 @@ const Login = () => {
                   {loading ? (
                     <>
                       <div role="status">
-                        <AiOutlineLoading />
+                        <AiOutlineLoading className="animate-spin" />
                         <span className="sr-only">Loading...</span>
                       </div>
                     </>

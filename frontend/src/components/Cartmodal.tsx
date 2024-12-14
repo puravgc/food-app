@@ -2,6 +2,7 @@ import { Button, Dialog, Transition } from "@headlessui/react";
 import { Fragment, useContext, useState } from "react";
 import { categoryContext } from "../context/categoryContext";
 import { toast } from "react-hot-toast";
+import { AiOutlineLoading } from "react-icons/ai";
 
 interface CartModalProps {
   cartModal: boolean;
@@ -19,6 +20,7 @@ const CartModal: React.FC<CartModalProps> = ({
   price,
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
+  const [loading, setloading] = useState<boolean>(false);
   const context = useContext(categoryContext);
 
   if (!context) {
@@ -36,6 +38,7 @@ const CartModal: React.FC<CartModalProps> = ({
   };
 
   const cartHandler = async () => {
+    setloading(true);
     try {
       const response = await fetch(
         "https://food-app-backend-topaz.vercel.app/addtocart",
@@ -52,6 +55,7 @@ const CartModal: React.FC<CartModalProps> = ({
       if (!data.success) {
         toast.error(data.message);
         setcartModal(false);
+        setloading(false);
         return;
       }
       toast.success(data.message);
@@ -60,6 +64,7 @@ const CartModal: React.FC<CartModalProps> = ({
     } catch (error) {
       toast.error("Failed to add item to cart. Please try again.");
       console.error("Failed to add item to cart:", error);
+      setloading(false);
     }
   };
 
@@ -129,7 +134,16 @@ const CartModal: React.FC<CartModalProps> = ({
                 className="inline-flex items-center px-5 py-2 text-lg font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 onClick={cartHandler}
               >
-                Add to Cart
+                {loading ? (
+                  <>
+                    <div role="status">
+                      <AiOutlineLoading className="animate-spin" />
+                      <span className="sr-only">Loading...</span>
+                    </div>
+                  </>
+                ) : (
+                  "Add to Cart"
+                )}
               </Button>
             </div>
           </Dialog.Panel>
