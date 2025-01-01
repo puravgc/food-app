@@ -80,7 +80,7 @@ const Login = () => {
             <h1 className="text-sm font-semibold mb-6 text-gray-500 text-center">
               Join to Our Community with all time access and free{" "}
             </h1>
-            <div className="mt-4 flex flex-col lg:flex-row items-center justify-between">
+            {/* <div className="mt-4 flex flex-col lg:flex-row items-center justify-between">
               <div className="w-full mb-2 lg:mb-0">
                 <button
                   type="button"
@@ -93,7 +93,7 @@ const Login = () => {
             </div>
             <div className="mt-4 text-sm text-gray-600 text-center">
               <p>or with email</p>
-            </div>
+            </div> */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">

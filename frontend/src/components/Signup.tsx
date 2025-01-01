@@ -75,7 +75,7 @@ const Signup: React.FC = () => {
             <h1 className="text-xs lg:text-sm font-semibold mb-4 lg:mb-6 text-gray-500 text-center">
               Join Our Community with all-time access and free{" "}
             </h1>
-            <div className="mt-4 flex flex-col lg:flex-row items-center justify-between w-full">
+            {/* <div className="mt-4 flex flex-col lg:flex-row items-center justify-between w-full">
               <button
                 onClick={handleGoogleSignup}
                 type="button"
@@ -86,7 +86,7 @@ const Signup: React.FC = () => {
             </div>
             <div className="mt-4 text-xs lg:text-sm text-gray-600 text-center">
               <p>or with email</p>
-            </div>
+            </div> */}
             <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-4">
               <div>
                 <label className="block text-xs lg:text-sm font-medium text-gray-700">
