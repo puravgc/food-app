@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
 import { userContext, UserContextType } from "../context/userContext";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 
