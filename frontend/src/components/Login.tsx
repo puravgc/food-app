@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { userContext } from "../context/userContext";
-import { FcGoogle } from "react-icons/fc";
 import { AiOutlineLoading } from "react-icons/ai";
 import ForgotPassModal from "./ForgotPassModal";
 import { GoEye } from "react-icons/go";
@@ -54,12 +53,12 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.open(
-      "https://food-app-backend-topaz.vercel.app/auth/google/callback",
-      "_self"
-    );
-  };
+  // const handleGoogleLogin = () => {
+  //   window.open(
+  //     "https://food-app-backend-topaz.vercel.app/auth/google/callback",
+  //     "_self"
+  //   );
+  // };
 
   return (
     <div className="">

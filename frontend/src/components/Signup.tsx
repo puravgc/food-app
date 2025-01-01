@@ -33,12 +33,12 @@ const Signup: React.FC = () => {
     }
   };
 
-  const handleGoogleSignup = () => {
-    window.open(
-      "https://food-app-backend-topaz.vercel.app/auth/google/callback",
-      "_self"
-    );
-  };
+  // const handleGoogleSignup = () => {
+  //   window.open(
+  //     "https://food-app-backend-topaz.vercel.app/auth/google/callback",
+  //     "_self"
+  //   );
+  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
