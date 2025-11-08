@@ -8,7 +8,7 @@ interface Category {
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
-  setIsOpen: () => void;
+  setIsOpen: (value: boolean) => void; // ✅ accept boolean
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -36,8 +36,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       }
       const data = await response.json();
       setCategories(data.categories);
-    } catch (error: any) {
-      console.error("Error fetching categories:", error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error fetching categories:", error.message);
+      } else {
+        console.error("Error fetching categories:", error);
+      }
     }
   };
 
