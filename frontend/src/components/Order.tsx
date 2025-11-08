@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+// Order.tsx
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Foods from "./Foods";
@@ -10,6 +11,10 @@ const Order: React.FC = () => {
   const categoryCtx = useContext(categoryContext);
   const userCtx = useContext(userContext);
   const navigate = useNavigate();
+
+  // Mobile sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -28,12 +33,21 @@ const Order: React.FC = () => {
   }, [userCtx, navigate]);
 
   return (
-    <div className="flex">
-      <div className="w-1/5">
-        <Sidebar />
-      </div>
-      <div className="w-full h-screen overflow-y-auto pb-24">
-        <Foods selectedCategory={categoryCtx?.selectedCategory || ""} />
+    <div className="flex h-full bg-gradient-to-br from-gray-50 to-red-50/30">
+      {/* Sidebar */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        setIsOpen={setIsSidebarOpen}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto relative">
+        <Foods
+          selectedCategory={categoryCtx?.selectedCategory || ""}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
       </div>
     </div>
   );

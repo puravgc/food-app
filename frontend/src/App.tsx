@@ -47,23 +47,27 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <div className="h-screen w-screen overflow-hidden">
+      <div className="h-screen w-screen overflow-hidden flex flex-col">
         <categoryContext.Provider value={categoryContextValue}>
           <userContext.Provider value={userContextValue}>
-            <Navbar />
+            <div className="flex-shrink-0">
+              <Navbar />
+            </div>
             <Toaster />
-            <Routes>
-              <Route path="/" element={<Hero />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/details" element={<Details />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/order" element={<Order />} />
-              <Route path="/myorders" element={<MyOrders />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/newpassword/:email" element={<NewPassword />} />
-              <Route path="*" element={<Nopage />} />
-            </Routes>
+            <div className="flex-1 overflow-y-auto">
+              <Routes>
+                <Route path="/" element={<Hero />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/details" element={<Details />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/order" element={<Order />} />
+                <Route path="/myorders" element={<MyOrders />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/newpassword/:email" element={<NewPassword />} />
+                <Route path="*" element={<Nopage />} />
+              </Routes>
+            </div>
           </userContext.Provider>
         </categoryContext.Provider>
       </div>

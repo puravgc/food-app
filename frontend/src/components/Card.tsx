@@ -5,9 +5,10 @@ interface CardProps {
   name: string;
   image: string;
   price: number;
+  id: string;
 }
 
-const Card: React.FC<CardProps> = ({ name, image, price }) => {
+const Card: React.FC<CardProps> = ({ name, image, price, id }) => {
   const [cartModal, setcartModal] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
 
@@ -38,52 +39,61 @@ const Card: React.FC<CardProps> = ({ name, image, price }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="relative m-2 flex w-80 h-96 max-w-xs flex-col overflow-hidden rounded-xl bg-white shadow-md shadow-black border border-gray-300">
-        <div className="relative mx-3 mt-3 h-60 overflow-hidden rounded-xl flex justify-center">
+      <div className="group relative m-2 w-80 max-w-xs flex-col overflow-hidden rounded-2xl bg-white shadow-lg border border-gray-200 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        {/* Image */}
+        <div className="relative mx-3 mt-4 h-56 overflow-hidden rounded-xl flex justify-center">
           <img
-            className="object-cover rounded-full"
+            className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
             src={image}
-            alt="product image"
+            alt={name}
           />
+
+          {/* Discount badge */}
+          <span className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded-md shadow">
+            -${8}
+          </span>
         </div>
+
+        {/* Body */}
         <div className="mt-4 px-5 pb-5">
-          <a href="#">
-            <h5 className="text-xl tracking-tight text-slate-900 truncate">
-              {name}
-            </h5>
-          </a>
-          <div className="mt-2 mb-5 flex items-center justify-between">
+          <h5 className="text-lg font-semibold text-slate-900 truncate">
+            {name}
+          </h5>
+
+          {/* Price & Rating */}
+          <div className="mt-3 mb-5 flex items-center justify-between">
             <p>
-              <span className="text-3xl font-bold text-slate-900">
-                ${price}
-              </span>
-              <span className="text-sm text-slate-900 line-through">
+              <span className="text-2xl font-bold text-red-600">${price}</span>
+              <span className="text-sm text-gray-500 line-through ml-1">
                 ${price + 8}
               </span>
             </p>
+
             <div className="flex items-center">
               {renderStars(rating)}
-              <span className="mr-2 ml-3 rounded bg-yellow-200 px-2.5 py-0.5 text-xs font-semibold">
+              <span className="ml-2 rounded bg-yellow-100 px-2.5 py-0.5 text-xs font-semibold text-yellow-700">
                 {rating}.0
               </span>
             </div>
           </div>
+
+          {/* Button */}
           <button
-            onClick={() => {
-              setcartModal(true);
-            }}
-            className="flex items-center justify-center rounded-md bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-500 focus:outline-none focus:ring-4 focus:ring-blue-300"
+            onClick={() => setcartModal(true)}
+            className="w-full flex items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white transition-colors duration-300 hover:bg-red-500 active:bg-red-700"
           >
-            Add to cart
+            Add to Cart
           </button>
         </div>
       </div>
+
       <Cartmodal
         cartModal={cartModal}
         setcartModal={setcartModal}
         name={name}
         image={image}
         price={price}
+        id={id}
       />
     </div>
   );

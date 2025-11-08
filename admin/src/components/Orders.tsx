@@ -43,7 +43,7 @@ const Orders: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const socketConnection = io("https://food-app-backend-topaz.vercel.app/");
+    const socketConnection = io("http://localhost:5000");
 
     socketConnection.on("cartdetails", () => {
       toast.success("NEW ORDER!!");
