@@ -20,7 +20,7 @@ interface CartItems {
 }
 
 const Cart = () => {
-  const socket = io("http://localhost:5000/");
+  const socket = io("https://food-app-production-c92a.up.railway.app");
   const navigate = useNavigate();
   const [loading, setloading] = useState<boolean>(false);
   const [cartItems, setcartItems] = useState<CartItems[]>([]);
@@ -222,20 +222,16 @@ const Cart = () => {
   const handleConfirmCheckout = async () => {
     setIsModalOpen(false);
     if (paymentOption === "eSewa Payment") {
-      removeAllCartItems();
-      const data = await postOrder();
-      esewaIntegration(data);
-      if (settotalCartItems) {
-        settotalCartItems(0);
-      }
+      const orderId = await postOrder();
+      esewaIntegration(orderId);
       return;
     }
-    removeAllCartItems();
-    postOrder();
-    if (settotalCartItems) {
-      settotalCartItems(0);
+    const resp = await postOrder();
+    if (resp) {
+      removeAllCartItems();
+      if (settotalCartItems) settotalCartItems(0);
+      navigate("/myorders");
     }
-    navigate("/myorders");
   };
 
   const removeAllCartItems = async () => {

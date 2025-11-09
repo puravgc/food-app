@@ -162,7 +162,7 @@ const MyOrders: React.FC = () => {
             </div>
             <h1 className="text-4xl font-bold text-gray-900">My Orders</h1>
           </div>
-          <p className="text-gray-600 ml-14">Track and manage your orders</p>
+          <p className="text-gray-600 ml-14">Track your orders</p>
         </div>
 
         {/* Orders List */}
