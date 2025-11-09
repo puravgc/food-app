@@ -43,7 +43,9 @@ const Orders: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const socketConnection = io("https://food-app-production-c92a.up.railway.app");
+    const socketConnection = io(
+      "https://food-app-production-c92a.up.railway.app"
+    );
 
     socketConnection.on("cartdetails", () => {
       toast.success("NEW ORDER!!");
